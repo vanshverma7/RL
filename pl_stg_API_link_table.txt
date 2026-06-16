@@ -1,0 +1,244 @@
+{
+    "name": "pl_stg_API_link_table",
+    "properties": {
+        "activities": [
+            {
+                "name": "LU_SelectStaging",
+                "type": "Lookup",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "AzureSqlSource",
+                        "sqlReaderStoredProcedureName": "[metahub].[usp_get_ingestion_config]",
+                        "storedProcedureParameters": {
+                            "TargetTableName": {
+                                "value": {
+                                    "value": "@pipeline().parameters.pTargetTableName",
+                                    "type": "Expression"
+                                }
+                            },
+                            "BatchName": {
+                                "value": {
+                                    "value": "@pipeline().parameters.pBatchName",
+                                    "type": "Expression"
+                                }
+                            },
+                            "Enabled": {
+                                "value": "Y"
+                            }
+                        },
+                        "queryTimeout": "02:00:00",
+                        "partitionOption": "None"
+                    },
+                    "dataset": {
+                        "referenceName": "DS_ASQL_ADMIN",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "SchemaName": "x",
+                            "TableName": "x"
+                        }
+                    },
+                    "firstRowOnly": false
+                }
+            },
+            {
+                "name": "FE_LoadStaging",
+                "type": "ForEach",
+                "dependsOn": [
+                    {
+                        "activity": "LU_SelectStaging",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "userProperties": [],
+                "typeProperties": {
+                    "items": {
+                        "value": "@activity('LU_SelectStaging').output.value",
+                        "type": "Expression"
+                    },
+                    "batchCount": 4,
+                    "activities": [
+                        {
+                            "name": "CD_REST_To_Parquet",
+                            "type": "Copy",
+                            "dependsOn": [
+                                {
+                                    "activity": "if_initial_load",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "timeout": "0.12:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30,
+                                "secureOutput": false,
+                                "secureInput": false
+                            },
+                            "userProperties": [],
+                            "typeProperties": {
+                                "source": {
+                                    "type": "RestSource",
+                                    "httpRequestTimeout": "00:01:40",
+                                    "requestInterval": "00.00:00:00.010",
+                                    "requestMethod": {
+                                        "value": "@item().HttpMethod",
+                                        "type": "Expression"
+                                    },
+                                    "additionalHeaders": {
+                                        "Content-Type": {
+                                            "value": "application/json",
+                                            "type": "Expression"
+                                        }
+                                    },
+                                    "paginationRules": {
+                                        "supportRFC5988": "true"
+                                    }
+                                },
+                                "sink": {
+                                    "type": "ParquetSink",
+                                    "storeSettings": {
+                                        "type": "AzureBlobFSWriteSettings"
+                                    },
+                                    "formatSettings": {
+                                        "type": "ParquetWriteSettings"
+                                    }
+                                },
+                                "enableStaging": false,
+                                "translator": {
+                                    "value": "@json(item().TabularTranslatorObject)",
+                                    "type": "Expression"
+                                }
+                            },
+                            "inputs": [
+                                {
+                                    "referenceName": "DS_REST_iTrent",
+                                    "type": "DatasetReference",
+                                    "parameters": {
+                                        "RelativeURL": {
+                                            "value": "@item().EndpointPath",
+                                            "type": "Expression"
+                                        }
+                                    }
+                                }
+                            ],
+                            "outputs": [
+                                {
+                                    "referenceName": "DS_ADL_Parquet_Target",
+                                    "type": "DatasetReference",
+                                    "parameters": {
+                                        "TargetStorageAccount": {
+                                            "value": "@item().TargetStorageAccount",
+                                            "type": "Expression"
+                                        },
+                                        "TargetContainer": {
+                                            "value": "@item().TargetStorageContainer",
+                                            "type": "Expression"
+                                        },
+                                        "TargetDirectory": {
+                                            "value": "@item().TargetDirectory",
+                                            "type": "Expression"
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "if_initial_load",
+                            "type": "IfCondition",
+                            "dependsOn": [],
+                            "userProperties": [],
+                            "typeProperties": {
+                                "expression": {
+                                    "value": "@equals(item().InitialLoad,'Y')",
+                                    "type": "Expression"
+                                },
+                                "ifTrueActivities": [
+                                    {
+                                        "name": "delete_destination",
+                                        "type": "Delete",
+                                        "dependsOn": [],
+                                        "policy": {
+                                            "timeout": "0.12:00:00",
+                                            "retry": 0,
+                                            "retryIntervalInSeconds": 30,
+                                            "secureOutput": false,
+                                            "secureInput": false
+                                        },
+                                        "userProperties": [],
+                                        "typeProperties": {
+                                            "dataset": {
+                                                "referenceName": "DS_ADL_Parquet_Delete",
+                                                "type": "DatasetReference",
+                                                "parameters": {
+                                                    "TargetStorageAccount": {
+                                                        "value": "@item().TargetStorageAccount",
+                                                        "type": "Expression"
+                                                    },
+                                                    "TargetContainer": {
+                                                        "value": "@item().TargetStorageContainer",
+                                                        "type": "Expression"
+                                                    },
+                                                    "TargetDirectory": {
+                                                        "value": "@item().TargetDirectory",
+                                                        "type": "Expression"
+                                                    }
+                                                }
+                                            },
+                                            "enableLogging": false,
+                                            "storeSettings": {
+                                                "type": "AzureBlobFSReadSettings",
+                                                "recursive": true,
+                                                "enablePartitionDiscovery": false
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "Wait1",
+                                        "type": "Wait",
+                                        "dependsOn": [
+                                            {
+                                                "activity": "delete_destination",
+                                                "dependencyConditions": [
+                                                    "Succeeded"
+                                                ]
+                                            }
+                                        ],
+                                        "userProperties": [],
+                                        "typeProperties": {
+                                            "waitTimeInSeconds": 10
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        ],
+        "parameters": {
+            "pBatchName": {
+                "type": "string",
+                "defaultValue": "test"
+            },
+            "pTargetTableName": {
+                "type": "string"
+            }
+        },
+        "folder": {
+            "name": "PL_01_Staging/ADLS"
+        },
+        "annotations": []
+    }
+}
