@@ -1,0 +1,825 @@
+{
+    "name": "pl_stg_ADLS_switching",
+    "properties": {
+        "activities": [
+            {
+                "name": "LU_SelectStaging",
+                "type": "Lookup",
+                "dependsOn": [
+                    {
+                        "activity": "LU_UpdateLogPipelineBatchStart",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "AzureSqlSource",
+                        "sqlReaderStoredProcedureName": "[ETL].[uspSelect_Staging_ADLS]",
+                        "storedProcedureParameters": {
+                            "Enabled": {
+                                "type": "String",
+                                "value": "Y"
+                            },
+                            "Sourcesystem": {
+                                "type": "String",
+                                "value": null
+                            },
+                            "SourceTableName": {
+                                "type": "String",
+                                "value": null
+                            },
+                            "TargetTableName": {
+                                "type": "String",
+                                "value": {
+                                    "value": "@pipeline().parameters.pTargetTableName",
+                                    "type": "Expression"
+                                }
+                            },
+                            "BatchName": {
+                                "type": "String",
+                                "value": {
+                                    "value": "@pipeline().parameters.pBatchName",
+                                    "type": "Expression"
+                                }
+                            },
+                            "SourceSystemType": {
+                                "value": "ADLS_Excel"
+                            }
+                        },
+                        "queryTimeout": "02:00:00",
+                        "partitionOption": "None"
+                    },
+                    "dataset": {
+                        "referenceName": "DS_ASQL_ADMIN",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "SchemaName": "x",
+                            "TableName": "x"
+                        }
+                    },
+                    "firstRowOnly": false
+                }
+            },
+            {
+                "name": "FE_LoadStaging",
+                "type": "ForEach",
+                "dependsOn": [
+                    {
+                        "activity": "LU_SelectStaging",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "userProperties": [],
+                "typeProperties": {
+                    "items": {
+                        "value": "@activity('LU_SelectStaging').output.value",
+                        "type": "Expression"
+                    },
+                    "isSequential": false,
+                    "batchCount": 8,
+                    "activities": [
+                        {
+                            "name": "if_initial_load",
+                            "description": "Perform full initial load if flag is set to Y",
+                            "type": "IfCondition",
+                            "dependsOn": [
+                                {
+                                    "activity": "LU_UpdateLogPipelineStart",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "userProperties": [],
+                            "typeProperties": {
+                                "expression": {
+                                    "value": "@equals(item().InitialLoad,'Y')",
+                                    "type": "Expression"
+                                },
+                                "ifTrueActivities": [
+                                    {
+                                        "name": "delete_destination",
+                                        "type": "Delete",
+                                        "dependsOn": [],
+                                        "policy": {
+                                            "timeout": "0.12:00:00",
+                                            "retry": 0,
+                                            "retryIntervalInSeconds": 30,
+                                            "secureOutput": false,
+                                            "secureInput": false
+                                        },
+                                        "userProperties": [],
+                                        "typeProperties": {
+                                            "dataset": {
+                                                "referenceName": "DS_ADL_Parquet_Delete",
+                                                "type": "DatasetReference",
+                                                "parameters": {
+                                                    "TargetStorageAccount": {
+                                                        "value": "@item().TargetStorageAccount",
+                                                        "type": "Expression"
+                                                    },
+                                                    "TargetContainer": {
+                                                        "value": "@item().TargetStorageContainer",
+                                                        "type": "Expression"
+                                                    },
+                                                    "TargetDirectory": {
+                                                        "value": "@item().TargetDirectory",
+                                                        "type": "Expression"
+                                                    }
+                                                }
+                                            },
+                                            "enableLogging": false,
+                                            "storeSettings": {
+                                                "type": "AzureBlobFSReadSettings",
+                                                "recursive": true,
+                                                "enablePartitionDiscovery": false
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "Wait1",
+                                        "type": "Wait",
+                                        "dependsOn": [
+                                            {
+                                                "activity": "delete_destination",
+                                                "dependencyConditions": [
+                                                    "Succeeded"
+                                                ]
+                                            }
+                                        ],
+                                        "userProperties": [],
+                                        "typeProperties": {
+                                            "waitTimeInSeconds": 10
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "name": "LU_UpdateLogPipelineStart",
+                            "description": "",
+                            "type": "Lookup",
+                            "dependsOn": [],
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30,
+                                "secureOutput": false,
+                                "secureInput": false
+                            },
+                            "userProperties": [],
+                            "typeProperties": {
+                                "source": {
+                                    "type": "AzureSqlSource",
+                                    "sqlReaderStoredProcedureName": "[ETL].[uspUpdate_StagingStart]",
+                                    "storedProcedureParameters": {
+                                        "SourceSystem": {
+                                            "type": "String",
+                                            "value": {
+                                                "value": "@item().SourceSystem",
+                                                "type": "Expression"
+                                            }
+                                        },
+                                        "TargetTableName": {
+                                            "type": "String",
+                                            "value": {
+                                                "value": "@item().TargetTableName",
+                                                "type": "Expression"
+                                            }
+                                        },
+                                        "Debug": {
+                                            "type": "String",
+                                            "value": null
+                                        }
+                                    },
+                                    "queryTimeout": "02:00:00",
+                                    "partitionOption": "None"
+                                },
+                                "dataset": {
+                                    "referenceName": "DS_ASQL_ADMIN",
+                                    "type": "DatasetReference",
+                                    "parameters": {
+                                        "SchemaName": "x",
+                                        "TableName": "x"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "name": "SP_UpdateStagingEnd",
+                            "type": "SqlServerStoredProcedure",
+                            "dependsOn": [
+                                {
+                                    "activity": "switch_to_dataset",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "policy": {
+                                "timeout": "7.00:00:00",
+                                "retry": 2,
+                                "retryIntervalInSeconds": 30,
+                                "secureOutput": false,
+                                "secureInput": false
+                            },
+                            "userProperties": [],
+                            "typeProperties": {
+                                "storedProcedureName": "[ETL].[uspUpdate_StagingEnd]",
+                                "storedProcedureParameters": {
+                                    "SourceSystem": {
+                                        "value": {
+                                            "value": "@item().SourceSystem",
+                                            "type": "Expression"
+                                        },
+                                        "type": "String"
+                                    },
+                                    "TargetTableName": {
+                                        "value": {
+                                            "value": "@item().TargetTableName",
+                                            "type": "Expression"
+                                        },
+                                        "type": "String"
+                                    },
+                                    "Debug": {
+                                        "value": null
+                                    }
+                                }
+                            },
+                            "linkedServiceName": {
+                                "referenceName": "LS_ASQL_Control",
+                                "type": "LinkedServiceReference"
+                            }
+                        },
+                        {
+                            "name": "switch_to_dataset",
+                            "description": "ingest using the appropriate dataset and and options",
+                            "type": "Switch",
+                            "dependsOn": [
+                                {
+                                    "activity": "if_initial_load",
+                                    "dependencyConditions": [
+                                        "Succeeded"
+                                    ]
+                                }
+                            ],
+                            "userProperties": [],
+                            "typeProperties": {
+                                "on": {
+                                    "value": "@concat('format_', \n\t\tsubstring(toLower(item().SourceFileName), \n\t\t\t      add(1, lastIndexOf(item().SourceFileName, '.')), \n\t\t\t      3), \n        '_pattern_', \n        string(contains(item().SourceFileName, '*'))\n        )",
+                                    "type": "Expression"
+                                },
+                                "cases": [
+                                    {
+                                        "value": "format_xls_pattern_True",
+                                        "activities": [
+                                            {
+                                                "name": "cd_xls_pattern",
+                                                "type": "Copy",
+                                                "dependsOn": [],
+                                                "policy": {
+                                                    "timeout": "0.12:00:00",
+                                                    "retry": 0,
+                                                    "retryIntervalInSeconds": 30,
+                                                    "secureOutput": false,
+                                                    "secureInput": false
+                                                },
+                                                "userProperties": [],
+                                                "typeProperties": {
+                                                    "source": {
+                                                        "type": "ExcelSource",
+                                                        "storeSettings": {
+                                                            "type": "AzureBlobFSReadSettings",
+                                                            "recursive": true,
+                                                            "wildcardFolderPath": {
+                                                                "value": "@item().SourceDirectory",
+                                                                "type": "Expression"
+                                                            },
+                                                            "wildcardFileName": {
+                                                                "value": "@item().SourceFileName",
+                                                                "type": "Expression"
+                                                            },
+                                                            "enablePartitionDiscovery": false
+                                                        }
+                                                    },
+                                                    "sink": {
+                                                        "type": "ParquetSink",
+                                                        "storeSettings": {
+                                                            "type": "AzureBlobFSWriteSettings",
+                                                            "copyBehavior": "MergeFiles",
+                                                            "metadata": [
+                                                                {
+                                                                    "name": "source_system_code",
+                                                                    "value": {
+                                                                        "value": "@item().SourceSystemCode",
+                                                                        "type": "Expression"
+                                                                    }
+                                                                }
+                                                            ]
+                                                        },
+                                                        "formatSettings": {
+                                                            "type": "ParquetWriteSettings"
+                                                        }
+                                                    },
+                                                    "enableStaging": false,
+                                                    "translator": {
+                                                        "value": "@json(item().TabularTranslatorObject)",
+                                                        "type": "Expression"
+                                                    }
+                                                },
+                                                "inputs": [
+                                                    {
+                                                        "referenceName": "DS_ADL_Excel",
+                                                        "type": "DatasetReference",
+                                                        "parameters": {
+                                                            "Container": {
+                                                                "value": "@item().SourceContainer",
+                                                                "type": "Expression"
+                                                            },
+                                                            "Directory": {
+                                                                "value": "@item().SourceDirectory",
+                                                                "type": "Expression"
+                                                            },
+                                                            "FileName": {
+                                                                "value": "@item().SourceFileName",
+                                                                "type": "Expression"
+                                                            },
+                                                            "StorageAccount": {
+                                                                "value": "@item().SourceStorageAccount",
+                                                                "type": "Expression"
+                                                            },
+                                                            "SheetName": "@item().SourceSheetName",
+                                                            "FirstRowAsHeaders": {
+                                                                "value": "@equals(item().FirstRowAsHeaders,'Y')",
+                                                                "type": "Expression"
+                                                            }
+                                                        }
+                                                    }
+                                                ],
+                                                "outputs": [
+                                                    {
+                                                        "referenceName": "DS_ADL_Parquet_Target",
+                                                        "type": "DatasetReference",
+                                                        "parameters": {
+                                                            "TargetStorageAccount": {
+                                                                "value": "@item().TargetStorageAccount",
+                                                                "type": "Expression"
+                                                            },
+                                                            "TargetContainer": {
+                                                                "value": "@item().TargetStorageContainer",
+                                                                "type": "Expression"
+                                                            },
+                                                            "TargetDirectory": {
+                                                                "value": "@item().TargetDirectory",
+                                                                "type": "Expression"
+                                                            }
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "value": "format_xls_pattern_False",
+                                        "activities": [
+                                            {
+                                                "name": "cd_xls_static",
+                                                "type": "Copy",
+                                                "dependsOn": [],
+                                                "policy": {
+                                                    "timeout": "0.12:00:00",
+                                                    "retry": 0,
+                                                    "retryIntervalInSeconds": 30,
+                                                    "secureOutput": false,
+                                                    "secureInput": false
+                                                },
+                                                "userProperties": [],
+                                                "typeProperties": {
+                                                    "source": {
+                                                        "type": "ExcelSource",
+                                                        "storeSettings": {
+                                                            "type": "AzureBlobFSReadSettings",
+                                                            "recursive": false,
+                                                            "enablePartitionDiscovery": false
+                                                        }
+                                                    },
+                                                    "sink": {
+                                                        "type": "ParquetSink",
+                                                        "storeSettings": {
+                                                            "type": "AzureBlobFSWriteSettings",
+                                                            "copyBehavior": "MergeFiles",
+                                                            "metadata": [
+                                                                {
+                                                                    "name": "source_system_code",
+                                                                    "value": {
+                                                                        "value": "@item().SourceSystemCode",
+                                                                        "type": "Expression"
+                                                                    }
+                                                                }
+                                                            ]
+                                                        },
+                                                        "formatSettings": {
+                                                            "type": "ParquetWriteSettings"
+                                                        }
+                                                    },
+                                                    "enableStaging": false,
+                                                    "translator": {
+                                                        "value": "@json(item().TabularTranslatorObject)",
+                                                        "type": "Expression"
+                                                    }
+                                                },
+                                                "inputs": [
+                                                    {
+                                                        "referenceName": "DS_ADL_Excel",
+                                                        "type": "DatasetReference",
+                                                        "parameters": {
+                                                            "Container": {
+                                                                "value": "@item().SourceContainer",
+                                                                "type": "Expression"
+                                                            },
+                                                            "Directory": {
+                                                                "value": "@item().SourceDirectory",
+                                                                "type": "Expression"
+                                                            },
+                                                            "FileName": {
+                                                                "value": "@item().SourceFileName",
+                                                                "type": "Expression"
+                                                            },
+                                                            "StorageAccount": {
+                                                                "value": "@item().SourceStorageAccount",
+                                                                "type": "Expression"
+                                                            },
+                                                            "SheetName": "@item().SourceSheetName",
+                                                            "FirstRowAsHeaders": {
+                                                                "value": "@equals(item().FirstRowAsHeaders,'Y')",
+                                                                "type": "Expression"
+                                                            }
+                                                        }
+                                                    }
+                                                ],
+                                                "outputs": [
+                                                    {
+                                                        "referenceName": "DS_ADL_Parquet_Target",
+                                                        "type": "DatasetReference",
+                                                        "parameters": {
+                                                            "TargetStorageAccount": {
+                                                                "value": "@item().TargetStorageAccount",
+                                                                "type": "Expression"
+                                                            },
+                                                            "TargetContainer": {
+                                                                "value": "@item().TargetStorageContainer",
+                                                                "type": "Expression"
+                                                            },
+                                                            "TargetDirectory": {
+                                                                "value": "@item().TargetDirectory",
+                                                                "type": "Expression"
+                                                            }
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "value": "format_csv_pattern_True",
+                                        "activities": [
+                                            {
+                                                "name": "cd_csv_pattern",
+                                                "type": "Copy",
+                                                "dependsOn": [],
+                                                "policy": {
+                                                    "timeout": "0.12:00:00",
+                                                    "retry": 0,
+                                                    "retryIntervalInSeconds": 30,
+                                                    "secureOutput": false,
+                                                    "secureInput": false
+                                                },
+                                                "userProperties": [],
+                                                "typeProperties": {
+                                                    "source": {
+                                                        "type": "DelimitedTextSource",
+                                                        "storeSettings": {
+                                                            "type": "AzureBlobFSReadSettings",
+                                                            "recursive": true,
+                                                            "wildcardFolderPath": {
+                                                                "value": "@item().SourceDirectory",
+                                                                "type": "Expression"
+                                                            },
+                                                            "wildcardFileName": {
+                                                                "value": "@item().SourceFileName",
+                                                                "type": "Expression"
+                                                            },
+                                                            "enablePartitionDiscovery": false
+                                                        },
+                                                        "formatSettings": {
+                                                            "type": "DelimitedTextReadSettings"
+                                                        }
+                                                    },
+                                                    "sink": {
+                                                        "type": "ParquetSink",
+                                                        "storeSettings": {
+                                                            "type": "AzureBlobFSWriteSettings",
+                                                            "copyBehavior": "MergeFiles",
+                                                            "metadata": [
+                                                                {
+                                                                    "name": "source_system_code",
+                                                                    "value": {
+                                                                        "value": "@item().SourceSystemCode",
+                                                                        "type": "Expression"
+                                                                    }
+                                                                }
+                                                            ]
+                                                        },
+                                                        "formatSettings": {
+                                                            "type": "ParquetWriteSettings"
+                                                        }
+                                                    },
+                                                    "enableStaging": false,
+                                                    "translator": {
+                                                        "value": "@json(item().TabularTranslatorObject)",
+                                                        "type": "Expression"
+                                                    }
+                                                },
+                                                "inputs": [
+                                                    {
+                                                        "referenceName": "DS_ADL_CSV",
+                                                        "type": "DatasetReference",
+                                                        "parameters": {
+                                                            "Container": "@item().SourceContainer",
+                                                            "Directory": "@item().SourceDirectory",
+                                                            "FileName": "@item().SourceFileName",
+                                                            "StorageAccount": "@item().SourceStorageAccount",
+                                                            "FirstRowAsHeaders": "@equals(item().FirstRowAsHeaders,'Y')"
+                                                        }
+                                                    }
+                                                ],
+                                                "outputs": [
+                                                    {
+                                                        "referenceName": "DS_ADL_Parquet_Target",
+                                                        "type": "DatasetReference",
+                                                        "parameters": {
+                                                            "TargetStorageAccount": "@item().TargetStorageAccount",
+                                                            "TargetContainer": "@item().TargetStorageContainer",
+                                                            "TargetDirectory": "@item().TargetDirectory"
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "value": "format_csv_pattern_False",
+                                        "activities": [
+                                            {
+                                                "name": "cd_csv_static",
+                                                "type": "Copy",
+                                                "dependsOn": [],
+                                                "policy": {
+                                                    "timeout": "0.12:00:00",
+                                                    "retry": 0,
+                                                    "retryIntervalInSeconds": 30,
+                                                    "secureOutput": false,
+                                                    "secureInput": false
+                                                },
+                                                "userProperties": [],
+                                                "typeProperties": {
+                                                    "source": {
+                                                        "type": "DelimitedTextSource",
+                                                        "storeSettings": {
+                                                            "type": "AzureBlobFSReadSettings",
+                                                            "recursive": true,
+                                                            "enablePartitionDiscovery": false
+                                                        },
+                                                        "formatSettings": {
+                                                            "type": "DelimitedTextReadSettings"
+                                                        }
+                                                    },
+                                                    "sink": {
+                                                        "type": "ParquetSink",
+                                                        "storeSettings": {
+                                                            "type": "AzureBlobFSWriteSettings",
+                                                            "copyBehavior": "MergeFiles",
+                                                            "metadata": [
+                                                                {
+                                                                    "name": "source_system_code",
+                                                                    "value": {
+                                                                        "value": "@item().SourceSystemCode",
+                                                                        "type": "Expression"
+                                                                    }
+                                                                }
+                                                            ]
+                                                        },
+                                                        "formatSettings": {
+                                                            "type": "ParquetWriteSettings"
+                                                        }
+                                                    },
+                                                    "enableStaging": false,
+                                                    "translator": {
+                                                        "type": "TabularTranslator",
+                                                        "typeConversion": true,
+                                                        "typeConversionSettings": {
+                                                            "allowDataTruncation": true,
+                                                            "treatBooleanAsNumber": false
+                                                        }
+                                                    }
+                                                },
+                                                "inputs": [
+                                                    {
+                                                        "referenceName": "DS_ADL_CSV",
+                                                        "type": "DatasetReference",
+                                                        "parameters": {
+                                                            "Container": "@item().SourceContainer",
+                                                            "Directory": "@item().SourceDirectory",
+                                                            "FileName": "@item().SourceFileName",
+                                                            "StorageAccount": "@item().SourceStorageAccount",
+                                                            "FirstRowAsHeaders": "@equals(item().FirstRowAsHeaders,'Y')"
+                                                        }
+                                                    }
+                                                ],
+                                                "outputs": [
+                                                    {
+                                                        "referenceName": "DS_ADL_Parquet_Target",
+                                                        "type": "DatasetReference",
+                                                        "parameters": {
+                                                            "TargetStorageAccount": "@item().TargetStorageAccount",
+                                                            "TargetContainer": "@item().TargetStorageContainer",
+                                                            "TargetDirectory": "@item().TargetDirectory"
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "SP_UpdateLogPipelineBatchEndSuccess",
+                "type": "SqlServerStoredProcedure",
+                "dependsOn": [
+                    {
+                        "activity": "FE_LoadStaging",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "storedProcedureName": "[ETL].[uspUpdate_LogPipelineBatchEndSuccess]",
+                    "storedProcedureParameters": {
+                        "PipelineBatchID": {
+                            "value": {
+                                "value": "@activity('LU_UpdateLogPipelineBatchStart').output.firstrow.PipelineBatchID",
+                                "type": "Expression"
+                            },
+                            "type": "Int32"
+                        }
+                    }
+                },
+                "linkedServiceName": {
+                    "referenceName": "LS_ASQL_Control",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "SP_UpdateLogPipelineBatchEndFailure",
+                "type": "SqlServerStoredProcedure",
+                "dependsOn": [
+                    {
+                        "activity": "FE_LoadStaging",
+                        "dependencyConditions": [
+                            "Failed"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "storedProcedureName": "[ETL].[uspUpdate_LogPipelineBatchEndFailure]",
+                    "storedProcedureParameters": {
+                        "PipelineBatchID": {
+                            "value": {
+                                "value": "@activity('LU_UpdateLogPipelineBatchStart').output.firstrow.PipelineBatchID",
+                                "type": "Expression"
+                            },
+                            "type": "Int32"
+                        }
+                    }
+                },
+                "linkedServiceName": {
+                    "referenceName": "LS_ASQL_Control",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "LU_UpdateLogPipelineBatchStart",
+                "description": "",
+                "type": "Lookup",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "AzureSqlSource",
+                        "sqlReaderStoredProcedureName": "[ETL].[uspUpdate_LogPipelineBatchStart]",
+                        "storedProcedureParameters": {
+                            "Pipeline": {
+                                "type": "String",
+                                "value": {
+                                    "value": "@pipeline().Pipeline",
+                                    "type": "Expression"
+                                }
+                            },
+                            "PipelineRunID": {
+                                "type": "String",
+                                "value": {
+                                    "value": "@pipeline().RunId",
+                                    "type": "Expression"
+                                }
+                            },
+                            "TriggerType": {
+                                "type": "String",
+                                "value": {
+                                    "value": "@pipeline().TriggerType",
+                                    "type": "Expression"
+                                }
+                            },
+                            "ParentPipeline": {
+                                "type": "String",
+                                "value": {
+                                    "value": "@pipeline()?.TriggeredByPipelineName",
+                                    "type": "Expression"
+                                }
+                            }
+                        },
+                        "queryTimeout": "02:00:00",
+                        "partitionOption": "None"
+                    },
+                    "dataset": {
+                        "referenceName": "DS_ASQL_ADMIN",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "SchemaName": "x",
+                            "TableName": "x"
+                        }
+                    }
+                }
+            }
+        ],
+        "parameters": {
+            "pBatchName": {
+                "type": "string",
+                "defaultValue": "infosec"
+            },
+            "pTargetTableName": {
+                "type": "string"
+            }
+        },
+        "variables": {
+            "vTabularTranslator": {
+                "type": "Array"
+            }
+        },
+        "folder": {
+            "name": "PL_01_Staging/ADLS"
+        },
+        "annotations": [],
+        "lastPublishTime": "2023-11-08T10:00:42Z"
+    },
+    "type": "Microsoft.DataFactory/factories/pipelines"
+}
