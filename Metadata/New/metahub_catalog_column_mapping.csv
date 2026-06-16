@@ -1,0 +1,561 @@
+mapping_id,source_dataset_id,target_dataset_id,source_column_id,target_column_id,mapping_type_id,mapping_name,source_column_name,target_column_name,mapping_expression,description,business_rule,mapping_group_code,source_ordinal,sort_order,is_primary_source,is_active,created_at,created_by,updated_at,updated_by
+200,35,36,,,2,country_main,country_dbid,country_id,"md5(concat_ws(""-"", country_dbid, 'xlg'))",Surrogate key,MD5 hash of business key + system code,main,1,1,true,true,2026-02-11 08:38:16.0566667,system,2026-03-13 14:02:24.5833333,pyspark_to_sql_migration
+201,35,36,,,2,country_main,,source_system_id,"md5(concat_ws(""-"", '1', 'xlg'))",Source system hash,MD5 of system BK + code,main,1,2,true,true,2026-02-11 08:38:16.0700000,system,2026-03-13 14:02:24.5900000,pyspark_to_sql_migration
+202,35,36,,,1,country_main,country_dbid,country_bk,country_dbid,Business key passthrough,,main,1,3,true,true,2026-02-11 08:38:16.0733333,system,2026-03-13 14:02:24.5900000,pyspark_to_sql_migration
+203,35,36,,,2,country_main,,source_system_bk,CAST(1 AS BIGINT),Source system numeric BK,Xledger = 1,main,1,4,true,true,2026-02-11 08:38:16.0800000,system,2026-03-13 14:02:24.5933333,pyspark_to_sql_migration
+204,35,36,,,1,country_main,country_code,country_code,country_code,Direct mapping,,main,1,5,true,true,2026-02-11 08:38:16.0833333,system,2026-03-13 14:02:24.5966667,pyspark_to_sql_migration
+205,35,36,,,1,country_main,country_description,country_name,country_description,Description as name,,main,1,6,true,true,2026-02-11 08:38:16.0866667,system,2026-03-13 14:02:24.6000000,pyspark_to_sql_migration
+206,35,36,,,2,country_main,,country_description,"concat_ws("" - "", country_code, country_description)",Code + description concat,,main,1,7,true,true,2026-02-11 08:38:16.0900000,system,2026-03-13 14:02:24.6033333,pyspark_to_sql_migration
+207,35,36,,,1,country_main,loaded_at,loaded_at_source,loaded_at,Source load timestamp,,main,1,8,true,true,2026-02-11 08:38:16.0900000,system,2026-03-13 14:02:24.6066667,pyspark_to_sql_migration
+208,35,36,,,2,country_main,,loaded_at,CURRENT_TIMESTAMP,Silver load timestamp,,main,1,9,true,true,2026-02-11 08:38:16.0933333,system,2026-03-18 14:32:37.1666667,ansi_sql_migration
+209,35,36,,,2,country_main,,is_deleted_flag,CAST(0 AS TINYINT),Soft delete flag,,main,1,10,true,true,2026-02-11 08:38:16.0966667,system,2026-03-13 14:02:24.6100000,pyspark_to_sql_migration
+230,,37,,,1,dim_fin_currency,country_id,country_id,country_id,Surrogate key passthrough,,main,1,1,true,true,2026-02-11 13:58:21.2966667,system,2026-02-11 13:58:21.2966667,
+231,,37,,,1,dim_fin_currency,country_code,country_code,country_code,Currency code passthrough,,main,1,2,true,true,2026-02-11 13:58:21.3000000,system,2026-02-11 13:58:21.3000000,
+232,,37,,,1,dim_fin_currency,country_name,country_name,country_name,Currency name passthrough,,main,1,3,true,true,2026-02-11 13:58:21.3033333,system,2026-02-11 13:58:21.3033333,
+233,,37,,,1,dim_fin_currency,country_description,country_description,country_description,Currency description passthrough,,main,1,4,true,true,2026-02-11 13:58:21.3066667,system,2026-02-11 13:58:21.3066667,
+300,41,44,,,1,,account_dbid,account_id,"CASE WHEN account_dbid IS NULL THEN MD5(CONCAT_WS('-', '-1', 'xlg')) ELSE MD5(CONCAT_WS('-', account_dbid, 'xlg')) END",,,main,1,1,true,true,2026-02-13 09:50:06.8866667,system,2026-03-31 14:04:10.3466667,lineage_fix
+301,41,44,,,1,,account_group_dbid,account_group_id,"CASE WHEN account_group_dbid IS NULL THEN MD5(CONCAT_WS('-', '-1', 'xlg')) ELSE MD5(CONCAT_WS('-', account_group_dbid, 'xlg')) END",,,main,1,2,true,true,2026-02-13 09:50:06.9000000,system,2026-03-31 14:04:10.3466667,lineage_fix
+302,,44,,,1,,account_group_level1_dbid,account_group_level1_id,"md5(concat_ws(""-"", account_group_level1_dbid, 'xlg'))",,,main,1,3,true,false,2026-02-13 09:50:06.9033333,system,2026-03-18 15:19:30.6666667,metadata_generator
+303,,44,,,1,,account_group_level2_dbid,account_group_level2_id,"md5(concat_ws(""-"", account_group_level2_dbid, 'xlg'))",,,main,1,4,true,false,2026-02-13 09:50:06.9066667,system,2026-03-18 15:19:30.6700000,metadata_generator
+304,,44,,,1,,account_group_level3_dbid,account_group_level3_id,"md5(concat_ws(""-"", account_group_level3_dbid, 'xlg'))",,,main,1,5,true,false,2026-02-13 09:50:06.9133333,system,2026-03-18 15:19:30.6733333,metadata_generator
+305,,44,,,1,,account_group_level4_dbid,account_group_level4_id,"md5(concat_ws(""-"", account_group_level4_dbid, 'xlg'))",,,main,1,6,true,false,2026-02-13 09:50:06.9200000,system,2026-03-18 15:19:30.6766667,metadata_generator
+306,,44,,,1,,account_indicator_dbid,account_indicator_id,"md5(concat_ws(""-"", account_indicator_dbid, 'xlg'))",,,main,1,7,true,false,2026-02-13 09:50:06.9200000,system,2026-03-18 15:19:30.6800000,metadata_generator
+307,,44,,,1,,chart_of_account_dbid,chart_of_account_id,"md5(concat_ws(""-"", chart_of_account_dbid, 'xlg'))",,,main,1,8,true,false,2026-02-13 09:50:06.9233333,system,2026-03-18 15:19:30.6800000,metadata_generator
+308,41,44,,,1,,ledger_type_dbid,ledger_type_id,"CASE WHEN ledger_type_dbid IS NULL THEN MD5(CONCAT_WS('-', '-1', 'xlg')) ELSE MD5(CONCAT_WS('-', ledger_type_dbid, 'xlg')) END",,,main,1,9,true,true,2026-02-13 09:50:06.9300000,system,2026-03-31 14:04:10.3466667,lineage_fix
+309,41,44,,,1,,owner_dbid,owner_id,"CASE WHEN owner_dbid IS NULL THEN MD5(CONCAT_WS('-', '-1', 'xlg')) ELSE MD5(CONCAT_WS('-', owner_dbid, 'xlg')) END",,,main,1,10,true,true,2026-02-13 09:50:06.9333333,system,2026-03-31 14:04:10.3466667,lineage_fix
+310,,44,,,1,,system_account_dbid,system_account_id,"md5(concat_ws(""-"", system_account_dbid, 'xlg'))",,,main,1,11,true,false,2026-02-13 09:50:06.9366667,system,2026-03-18 15:19:30.6833333,metadata_generator
+311,41,44,,,1,,"",source_system_id,"MD5(CONCAT_WS('-', '1', 'xlg'))",,,main,1,12,true,true,2026-02-13 09:50:06.9400000,system,2026-03-31 14:04:10.3466667,lineage_fix
+312,,44,,,1,,"",source_system_bk,CAST(1 AS BIGINT),,,main,1,13,true,false,2026-02-13 09:50:06.9433333,system,2026-03-18 15:19:30.6866667,metadata_generator
+313,41,44,,,1,,account_dbid,account_bk,account_dbid,,,main,1,14,true,true,2026-02-13 09:50:06.9466667,system,2026-03-31 14:04:10.3466667,lineage_fix
+314,,44,,,1,,account_group_dbid,account_group_bk,account_group_dbid,,,main,1,15,true,false,2026-02-13 09:50:06.9500000,system,2026-03-18 15:19:30.6900000,metadata_generator
+315,,44,,,1,,account_group_level1_dbid,account_group_level1_bk,account_group_level1_dbid,,,main,1,16,true,false,2026-02-13 09:50:06.9566667,system,2026-03-18 15:19:30.6933333,metadata_generator
+316,,44,,,1,,account_group_level2_dbid,account_group_level2_bk,account_group_level2_dbid,,,main,1,17,true,false,2026-02-13 09:50:06.9600000,system,2026-03-18 15:19:30.6966667,metadata_generator
+317,,44,,,1,,account_group_level3_dbid,account_group_level3_bk,account_group_level3_dbid,,,main,1,18,true,false,2026-02-13 09:50:06.9600000,system,2026-03-18 15:19:30.7000000,metadata_generator
+318,,44,,,1,,account_group_level4_dbid,account_group_level4_bk,account_group_level4_dbid,,,main,1,19,true,false,2026-02-13 09:50:06.9666667,system,2026-03-18 15:19:30.7033333,metadata_generator
+319,,44,,,1,,account_indicator_dbid,account_indicator_bk,account_indicator_dbid,,,main,1,20,true,false,2026-02-13 09:50:06.9700000,system,2026-03-18 15:19:30.7066667,metadata_generator
+320,,44,,,1,,chart_of_account_dbid,chart_of_account_bk,chart_of_account_dbid,,,main,1,21,true,false,2026-02-13 09:50:06.9733333,system,2026-03-18 15:19:30.7100000,metadata_generator
+321,,44,,,1,,ledger_type_dbid,ledger_type_bk,ledger_type_dbid,,,main,1,22,true,false,2026-02-13 09:50:06.9766667,system,2026-03-18 15:19:30.7100000,metadata_generator
+322,,44,,,1,,owner_dbid,owner_bk,owner_dbid,,,main,1,23,true,false,2026-02-13 09:50:06.9800000,system,2026-03-18 15:19:30.7133333,metadata_generator
+323,41,44,,,1,,code,account_code,code,,,main,1,24,true,true,2026-02-13 09:50:06.9866667,system,2026-04-07 10:26:28.1733333,lineage_fix
+324,41,44,,,1,,description,account_name,description,,,main,1,25,true,true,2026-02-13 09:50:06.9900000,system,2026-04-07 10:26:28.1633333,lineage_fix
+325,,44,,,1,,"",account_description,"concat_ws("" - "", account_code, account_description)",,,main,1,26,true,false,2026-02-13 09:50:06.9933333,system,2026-03-18 15:19:30.7166667,metadata_generator
+326,,44,,,1,,description_translated,account_description_translated,description_translated,,,main,1,27,true,false,2026-02-13 09:50:06.9966667,system,2026-03-18 15:19:30.7200000,metadata_generator
+327,,44,,,1,,balance_sheet,is_balance_sheet,CAST(CASE WHEN balance_sheet = true THEN 1 ELSE 0 END AS TINYINT),,,main,1,28,true,false,2026-02-13 09:50:07.0000000,system,2026-03-18 15:19:30.7200000,metadata_generator
+328,,44,,,1,,asset,is_asset,CAST(CASE WHEN asset = true THEN 1 ELSE 0 END AS TINYINT),,,main,1,29,true,false,2026-02-13 09:50:07.0033333,system,2026-03-18 15:19:30.7233333,metadata_generator
+329,,44,,,1,,cost,is_cost,CAST(CASE WHEN cost = true THEN 1 ELSE 0 END AS TINYINT),,,main,1,30,true,false,2026-02-13 09:50:07.0066667,system,2026-03-18 15:19:30.7266667,metadata_generator
+330,,44,,,1,,credit,is_credit,CAST(CASE WHEN credit = true THEN 1 ELSE 0 END AS TINYINT),,,main,1,31,true,false,2026-02-13 09:50:07.0100000,system,2026-03-18 15:19:30.7300000,metadata_generator
+331,,44,,,1,,equity,is_equity,CAST(CASE WHEN equity = true THEN 1 ELSE 0 END AS TINYINT),,,main,1,32,true,false,2026-02-13 09:50:07.0133333,system,2026-03-18 15:19:30.7333333,metadata_generator
+332,,44,,,1,,finance,is_finance,CAST(CASE WHEN finance = true THEN 1 ELSE 0 END AS TINYINT),,,main,1,33,true,false,2026-02-13 09:50:07.0166667,system,2026-03-18 15:19:30.7366667,metadata_generator
+333,,44,,,1,,liabilities,is_liabilities,CAST(CASE WHEN liabilities = true THEN 1 ELSE 0 END AS TINYINT),,,main,1,34,true,false,2026-02-13 09:50:07.0200000,system,2026-03-18 15:19:30.7400000,metadata_generator
+334,,44,,,1,,posting,is_posting,CAST(CASE WHEN posting = true THEN 1 ELSE 0 END AS TINYINT),,,main,1,35,true,false,2026-02-13 09:50:07.0233333,system,2026-03-18 15:19:30.7400000,metadata_generator
+335,,44,,,1,,revenue,is_revenue,CAST(CASE WHEN revenue = true THEN 1 ELSE 0 END AS TINYINT),,,main,1,36,true,false,2026-02-13 09:50:07.0266667,system,2026-03-18 15:19:30.7433333,metadata_generator
+336,,44,,,1,,group,is_group,CAST(CASE WHEN group = true THEN 1 ELSE 0 END AS TINYINT),,,main,1,37,true,false,2026-02-13 09:50:07.0300000,system,2026-03-18 15:19:30.7466667,metadata_generator
+337,,44,,,1,,created_at,created_at,created_at,,,main,1,38,true,false,2026-02-13 09:50:07.0333333,system,2026-03-18 15:19:30.7500000,metadata_generator
+338,,44,,,1,,modified_at,modified_at,modified_at,,,main,1,39,true,false,2026-02-13 09:50:07.0366667,system,2026-03-18 15:19:30.7533333,metadata_generator
+339,41,44,,,1,,loaded_at,loaded_at_source,CAST(loaded_at AS TIMESTAMP),,,main,1,40,true,true,2026-02-13 09:50:07.0400000,system,2026-03-31 14:04:10.3466667,lineage_fix
+340,41,44,,,1,,"",loaded_at,CURRENT_TIMESTAMP,,,main,1,41,true,true,2026-02-13 09:50:07.0433333,system,2026-03-31 14:04:10.3466667,lineage_fix
+341,41,44,,,1,,"",is_deleted_flag,0,,,main,1,42,true,true,2026-02-13 09:50:07.0466667,system,2026-03-31 14:04:10.3466667,lineage_fix
+350,,44,,,1,,status_group_id,account_id,status_group_id,,,unknown_member,1,1,true,true,2026-02-13 09:50:07.0500000,system,2026-03-13 14:02:24.2800000,pyspark_to_sql_migration
+351,,44,,,1,,"",account_group_id,CAST(NULL AS STRING),,,unknown_member,1,2,true,true,2026-02-13 09:50:07.0533333,system,2026-03-13 14:02:24.2866667,pyspark_to_sql_migration
+352,,44,,,1,,"",account_group_level1_id,CAST(NULL AS STRING),,,unknown_member,1,3,true,true,2026-02-13 09:50:07.0566667,system,2026-03-13 14:02:24.2933333,pyspark_to_sql_migration
+353,,44,,,1,,"",account_group_level2_id,CAST(NULL AS STRING),,,unknown_member,1,4,true,true,2026-02-13 09:50:07.0600000,system,2026-03-13 14:02:24.3000000,pyspark_to_sql_migration
+354,,44,,,1,,"",account_group_level3_id,CAST(NULL AS STRING),,,unknown_member,1,5,true,true,2026-02-13 09:50:07.0666667,system,2026-03-13 14:02:24.3100000,pyspark_to_sql_migration
+355,,44,,,1,,"",account_group_level4_id,CAST(NULL AS STRING),,,unknown_member,1,6,true,true,2026-02-13 09:50:07.0700000,system,2026-03-13 14:02:24.3166667,pyspark_to_sql_migration
+356,,44,,,1,,"",account_indicator_id,CAST(NULL AS STRING),,,unknown_member,1,7,true,true,2026-02-13 09:50:07.0733333,system,2026-03-13 14:02:24.3233333,pyspark_to_sql_migration
+357,,44,,,1,,"",chart_of_account_id,CAST(NULL AS STRING),,,unknown_member,1,8,true,true,2026-02-13 09:50:07.0766667,system,2026-03-13 14:02:24.3300000,pyspark_to_sql_migration
+358,,44,,,1,,"",ledger_type_id,CAST(NULL AS STRING),,,unknown_member,1,9,true,true,2026-02-13 09:50:07.0800000,system,2026-03-13 14:02:24.3366667,pyspark_to_sql_migration
+359,,44,,,1,,"",owner_id,CAST(NULL AS STRING),,,unknown_member,1,10,true,true,2026-02-13 09:50:07.0833333,system,2026-03-13 14:02:24.3433333,pyspark_to_sql_migration
+360,,44,,,1,,"",source_system_id,CAST(NULL AS STRING),,,unknown_member,1,11,true,true,2026-02-13 09:50:07.0866667,system,2026-03-13 14:02:24.3500000,pyspark_to_sql_migration
+361,,44,,,1,,"",system_account_id,CAST(NULL AS STRING),,,unknown_member,1,12,true,true,2026-02-13 09:50:07.0900000,system,2026-03-13 14:02:24.3566667,pyspark_to_sql_migration
+362,,44,,,1,,status_group_bk,account_bk,status_group_bk,,,unknown_member,1,13,true,true,2026-02-13 09:50:07.0933333,system,2026-03-13 14:02:24.3633333,pyspark_to_sql_migration
+363,,44,,,1,,"",account_group_bk,CAST(NULL AS BIGINT),,,unknown_member,1,14,true,true,2026-02-13 09:50:07.0966667,system,2026-03-13 14:02:24.3700000,pyspark_to_sql_migration
+364,,44,,,1,,"",account_group_level1_bk,CAST(NULL AS BIGINT),,,unknown_member,1,15,true,true,2026-02-13 09:50:07.1000000,system,2026-03-13 14:02:24.3766667,pyspark_to_sql_migration
+365,,44,,,1,,"",account_group_level2_bk,CAST(NULL AS BIGINT),,,unknown_member,1,16,true,true,2026-02-13 09:50:07.1033333,system,2026-03-13 14:02:24.3833333,pyspark_to_sql_migration
+366,,44,,,1,,"",account_group_level3_bk,CAST(NULL AS BIGINT),,,unknown_member,1,17,true,true,2026-02-13 09:50:07.1066667,system,2026-03-13 14:02:24.3900000,pyspark_to_sql_migration
+367,,44,,,1,,"",account_group_level4_bk,CAST(NULL AS BIGINT),,,unknown_member,1,18,true,true,2026-02-13 09:50:07.1100000,system,2026-03-13 14:02:24.4000000,pyspark_to_sql_migration
+368,,44,,,1,,"",account_indicator_bk,CAST(NULL AS BIGINT),,,unknown_member,1,19,true,true,2026-02-13 09:50:07.1166667,system,2026-03-13 14:02:24.4066667,pyspark_to_sql_migration
+369,,44,,,1,,"",chart_of_account_bk,CAST(NULL AS BIGINT),,,unknown_member,1,20,true,true,2026-02-13 09:50:07.1200000,system,2026-03-13 14:02:24.4133333,pyspark_to_sql_migration
+370,,44,,,1,,"",ledger_type_bk,CAST(NULL AS BIGINT),,,unknown_member,1,21,true,true,2026-02-13 09:50:07.1233333,system,2026-03-13 14:02:24.4200000,pyspark_to_sql_migration
+371,,44,,,1,,"",owner_bk,CAST(NULL AS BIGINT),,,unknown_member,1,22,true,true,2026-02-13 09:50:07.1266667,system,2026-03-13 14:02:24.4266667,pyspark_to_sql_migration
+372,,44,,,1,,"",source_system_bk,CAST(NULL AS BIGINT),,,unknown_member,1,23,true,true,2026-02-13 09:50:07.1300000,system,2026-03-13 14:02:24.4333333,pyspark_to_sql_migration
+373,,44,,,1,,status_group_code,account_code,status_group_code,,,unknown_member,1,24,true,true,2026-02-13 09:50:07.1333333,system,2026-03-13 14:02:24.4400000,pyspark_to_sql_migration
+374,,44,,,1,,status_group_description,account_name,status_group_description,,,unknown_member,1,25,true,true,2026-02-13 09:50:07.1366667,system,2026-03-13 14:02:24.4466667,pyspark_to_sql_migration
+375,,44,,,1,,status_group_description,account_description,status_group_description,,,unknown_member,1,26,true,true,2026-02-13 09:50:07.1400000,system,2026-03-13 14:02:24.4533333,pyspark_to_sql_migration
+376,,44,,,1,,status_group_description,account_description_translated,status_group_description,,,unknown_member,1,27,true,true,2026-02-13 09:50:07.1433333,system,2026-03-13 14:02:24.4600000,pyspark_to_sql_migration
+377,,44,,,1,,"",is_balance_sheet,CAST(0 AS TINYINT),,,unknown_member,1,28,true,true,2026-02-13 09:50:07.1466667,system,2026-03-13 14:02:24.4733333,pyspark_to_sql_migration
+378,,44,,,1,,"",is_asset,CAST(0 AS TINYINT),,,unknown_member,1,29,true,true,2026-02-13 09:50:07.1500000,system,2026-03-13 14:02:24.5033333,pyspark_to_sql_migration
+379,,44,,,1,,"",is_cost,CAST(0 AS TINYINT),,,unknown_member,1,30,true,true,2026-02-13 09:50:07.1533333,system,2026-03-13 14:02:24.5100000,pyspark_to_sql_migration
+380,,44,,,1,,"",is_credit,CAST(0 AS TINYINT),,,unknown_member,1,31,true,true,2026-02-13 09:50:07.1566667,system,2026-03-13 14:02:24.5166667,pyspark_to_sql_migration
+381,,44,,,1,,"",is_equity,CAST(0 AS TINYINT),,,unknown_member,1,32,true,true,2026-02-13 09:50:07.1600000,system,2026-03-13 14:02:24.5233333,pyspark_to_sql_migration
+382,,44,,,1,,"",is_finance,CAST(0 AS TINYINT),,,unknown_member,1,33,true,true,2026-02-13 09:50:07.1633333,system,2026-03-13 14:02:24.5300000,pyspark_to_sql_migration
+383,,44,,,1,,"",is_liabilities,CAST(0 AS TINYINT),,,unknown_member,1,34,true,true,2026-02-13 09:50:07.1666667,system,2026-03-13 14:02:24.5366667,pyspark_to_sql_migration
+384,,44,,,1,,"",is_posting,CAST(0 AS TINYINT),,,unknown_member,1,35,true,true,2026-02-13 09:50:07.1700000,system,2026-03-13 14:02:24.5433333,pyspark_to_sql_migration
+385,,44,,,1,,"",is_revenue,CAST(0 AS TINYINT),,,unknown_member,1,36,true,true,2026-02-13 09:50:07.1733333,system,2026-03-13 14:02:24.5500000,pyspark_to_sql_migration
+386,,44,,,1,,"",is_group,CAST(0 AS TINYINT),,,unknown_member,1,37,true,true,2026-02-13 09:50:07.1766667,system,2026-03-13 14:02:24.5566667,pyspark_to_sql_migration
+387,,44,,,1,,created_at,created_at,created_at,,,unknown_member,1,38,true,true,2026-02-13 09:50:07.1800000,system,2026-03-13 14:02:24.5600000,pyspark_to_sql_migration
+388,,44,,,1,,modified_at,modified_at,modified_at,,,unknown_member,1,39,true,true,2026-02-13 09:50:07.1833333,system,2026-03-13 14:02:24.5666667,pyspark_to_sql_migration
+389,,44,,,1,,loaded_at,loaded_at_source,loaded_at,,,unknown_member,1,40,true,true,2026-02-13 09:50:07.1866667,system,2026-03-13 14:02:24.5733333,pyspark_to_sql_migration
+390,,44,,,1,,"",loaded_at,CURRENT_TIMESTAMP,,,unknown_member,1,41,true,true,2026-02-13 09:50:07.1900000,system,2026-03-18 14:32:37.1666667,ansi_sql_migration
+391,,44,,,1,,"",is_deleted_flag,CAST(0 AS TINYINT),,,unknown_member,1,42,true,true,2026-02-13 09:50:07.1933333,system,2026-03-13 14:02:24.5800000,pyspark_to_sql_migration
+460,43,46,,,1,,transaction_dbid,transaction_id,"md5(concat_ws(""-"", transaction_dbid, 'xlg'))",Surrogate key,,main,1,1,true,true,2026-02-12 11:55:21.8266667,system,2026-03-31 14:04:11.7733333,lineage_fix
+461,43,46,,,1,,header_dbid,transaction_header_id,"CASE WHEN header_dbid IS NULL THEN md5(concat_ws(""-"", '-1', 'xlg')) ELSE md5(concat_ws(""-"", header_dbid, 'xlg')) END",FK with unknown member fallback,,main,1,2,true,true,2026-02-12 11:55:21.8300000,system,2026-03-31 14:04:11.7733333,lineage_fix
+462,43,46,,,1,,owner_dbid,owner_id,"CASE WHEN owner_dbid IS NULL THEN md5(concat_ws(""-"", '-1', 'xlg')) ELSE md5(concat_ws(""-"", owner_dbid, 'xlg')) END",FK with unknown member fallback,,main,1,3,true,true,2026-02-12 11:55:21.8333333,system,2026-03-31 14:04:11.7733333,lineage_fix
+463,43,46,,,1,,account_dbid,account_id,"CASE WHEN account_dbid IS NULL THEN md5(concat_ws(""-"", '-1', 'xlg')) ELSE md5(concat_ws(""-"", account_dbid, 'xlg')) END",FK with unknown member fallback,,main,1,4,true,true,2026-02-12 11:55:21.8366667,system,2026-03-31 14:04:11.7733333,lineage_fix
+464,43,46,,,1,,"",source_system_id,"md5(concat_ws(""-"", '1', 'xlg'))",System ID constant,,main,1,5,true,true,2026-02-12 11:55:21.8400000,system,2026-03-31 14:04:11.7733333,lineage_fix
+465,43,46,,,1,,asset_dbid,asset_id,"CASE WHEN asset_dbid IS NULL THEN md5(concat_ws(""-"", '-1', 'xlg')) ELSE md5(concat_ws(""-"", asset_dbid, 'xlg')) END",FK with unknown member fallback,,main,1,6,true,true,2026-02-12 11:55:21.8400000,system,2026-03-31 14:04:11.7733333,lineage_fix
+466,43,46,,,1,,period_id,period_id,"CASE WHEN period_id IS NULL THEN md5(concat_ws(""-"", '-1', 'xlg')) ELSE md5(concat_ws(""-"", period_id, 'xlg')) END",FK with unknown member fallback,,main,1,7,true,true,2026-02-12 11:55:21.8433333,system,2026-03-31 14:04:11.7733333,lineage_fix
+467,43,46,,,1,,gl_object1_dbid,cost_centre_id,"CASE WHEN gl_object1_dbid IS NULL THEN md5(concat_ws(""-"", '-1', 'xlg')) ELSE md5(concat_ws(""-"", gl_object1_dbid, 'xlg')) END",FK with unknown member fallback,,main,1,8,true,true,2026-02-12 11:55:21.8466667,system,2026-03-31 14:04:11.7733333,lineage_fix
+468,43,46,,,1,,gl_object2_dbid,project_id,"CASE WHEN gl_object2_dbid IS NULL THEN md5(concat_ws(""-"", '-1', 'xlg')) ELSE md5(concat_ws(""-"", gl_object2_dbid, 'xlg')) END",FK with unknown member fallback,,main,1,9,true,true,2026-02-12 11:55:21.8500000,system,2026-03-31 14:04:11.7733333,lineage_fix
+469,43,46,,,1,,gl_object3_dbid,position_reference_id,"CASE WHEN gl_object3_dbid IS NULL THEN md5(concat_ws(""-"", '-1', 'xlg')) ELSE md5(concat_ws(""-"", gl_object3_dbid, 'xlg')) END",FK with unknown member fallback,,main,1,10,true,true,2026-02-12 11:55:21.8533333,system,2026-03-31 14:04:11.7733333,lineage_fix
+470,43,46,,,1,,gl_object4_dbid,asset_class_id,"CASE WHEN gl_object4_dbid IS NULL THEN md5(concat_ws(""-"", '-1', 'xlg')) ELSE md5(concat_ws(""-"", gl_object4_dbid, 'xlg')) END",FK with unknown member fallback,,main,1,11,true,true,2026-02-12 11:55:21.8566667,system,2026-03-31 14:04:11.7733333,lineage_fix
+471,43,46,,,1,,gl_object5_dbid,cost_revenue_period_id,"CASE WHEN gl_object5_dbid IS NULL THEN md5(concat_ws(""-"", '-1', 'xlg')) ELSE md5(concat_ws(""-"", gl_object5_dbid, 'xlg')) END",FK with unknown member fallback,,main,1,12,true,true,2026-02-12 11:55:21.8600000,system,2026-03-31 14:04:11.7733333,lineage_fix
+472,43,46,,,1,,xgl_dbid,xgl_dimension_id,"CASE WHEN xgl_dbid IS NULL THEN md5(concat_ws(""-"", '-1', 'xlg')) ELSE md5(concat_ws(""-"", xgl_dbid, 'xlg')) END",FK with unknown member fallback,,main,1,13,true,true,2026-02-12 11:55:21.8633333,system,2026-03-31 14:04:11.7733333,lineage_fix
+473,43,46,,,1,,currency_dbid,currency_id,"CASE WHEN currency_dbid IS NULL THEN md5(concat_ws(""-"", '-1', 'xlg')) ELSE md5(concat_ws(""-"", currency_dbid, 'xlg')) END",FK with unknown member fallback,,main,1,14,true,true,2026-02-12 11:55:21.8666667,system,2026-03-31 14:04:11.7733333,lineage_fix
+474,43,46,,,1,,tax_rule_dbid,tax_rule_id,"CASE WHEN tax_rule_dbid IS NULL THEN md5(concat_ws(""-"", '-1', 'xlg')) ELSE md5(concat_ws(""-"", tax_rule_dbid, 'xlg')) END",FK with unknown member fallback,,main,1,15,true,true,2026-02-12 11:55:21.8700000,system,2026-03-31 14:04:11.7733333,lineage_fix
+475,43,46,,,1,,bank_account_dbid,bank_account_id,"CASE WHEN bank_account_dbid IS NULL THEN md5(concat_ws(""-"", '-1', 'xlg')) ELSE md5(concat_ws(""-"", bank_account_dbid, 'xlg')) END",FK with unknown member fallback,,main,1,16,true,true,2026-02-12 11:55:21.8733333,system,2026-03-31 14:04:11.7733333,lineage_fix
+476,43,46,,,1,,company_dbid,company_id,"CASE WHEN company_dbid IS NULL THEN md5(concat_ws(""-"", '-1', 'xlg')) ELSE md5(concat_ws(""-"", company_dbid, 'xlg')) END",FK with unknown member fallback,,main,1,17,true,true,2026-02-12 11:55:21.8766667,system,2026-03-31 14:04:11.7733333,lineage_fix
+477,43,46,,,1,,account_indicator_dbid,account_indicator_id,"CASE WHEN account_indicator_dbid IS NULL THEN md5(concat_ws(""-"", '-1', 'xlg')) ELSE md5(concat_ws(""-"", account_indicator_dbid, 'xlg')) END",FK with unknown member fallback,,main,1,18,true,true,2026-02-12 11:55:21.8800000,system,2026-03-31 14:04:11.7733333,lineage_fix
+478,43,46,,,1,,transaction_dbid,transaction_bk,transaction_dbid,BK passthrough,,main,1,19,true,true,2026-02-12 11:55:21.8833333,system,2026-03-31 14:04:11.7733333,lineage_fix
+479,43,46,,,1,,match_id,match_bk,match_id,BK passthrough,,main,1,20,true,true,2026-02-12 11:55:21.8866667,system,2026-03-31 14:04:11.7733333,lineage_fix
+480,43,46,,,1,,unit_number_dbid,unit_number_bk,unit_number_dbid,BK passthrough,,main,1,21,true,true,2026-02-12 11:55:21.8900000,system,2026-03-31 14:04:11.7733333,lineage_fix
+481,43,46,,,1,,unit_quantity_dbid,unit_quantity_bk,unit_quantity_dbid,BK passthrough,,main,1,22,true,true,2026-02-12 11:55:21.8933333,system,2026-03-31 14:04:11.7733333,lineage_fix
+482,43,46,,,1,,amount,transaction_amount,"CAST(coalesce(amount, 0) AS DECIMAL(18,2))",NVL to 0,,main,1,23,true,true,2026-02-12 11:55:21.8966667,system,2026-03-31 14:04:11.7733333,lineage_fix
+483,43,46,,,1,,quantity,transaction_quantity,"CAST(coalesce(quantity, 0) AS DECIMAL(18,2))",NVL to 0,,main,1,24,true,true,2026-02-12 11:55:21.9000000,system,2026-03-31 14:04:11.7733333,lineage_fix
+484,43,46,,,1,,invoice_amount,invoice_amount,"CAST(coalesce(invoice_amount, 0) AS DECIMAL(18,2))",NVL to 0,,main,1,25,true,true,2026-02-12 11:55:21.9033333,system,2026-03-31 14:04:11.7733333,lineage_fix
+485,43,46,,,1,,tax_amount,tax_amount,"CAST(coalesce(tax_amount, 0) AS DECIMAL(18,2))",NVL to 0,,main,1,26,true,true,2026-02-12 11:55:21.9066667,system,2026-03-31 14:04:11.7733333,lineage_fix
+486,43,46,,,1,,reconciled,is_reconciled,CAST(CASE WHEN reconciled = true THEN 1 ELSE 0 END AS TINYINT),Bool to tinyint,,main,1,27,true,true,2026-02-12 11:55:21.9100000,system,2026-03-31 14:04:11.7733333,lineage_fix
+487,43,46,,,1,,text,transaction_text,text,Passthrough,,main,1,28,true,true,2026-02-12 11:55:21.9133333,system,2026-03-31 14:04:11.7733333,lineage_fix
+488,43,46,,,1,,position_number,position_number,position_number,Passthrough,,main,1,29,true,true,2026-02-12 11:55:21.9166667,system,2026-03-31 14:04:11.7733333,lineage_fix
+489,43,46,,,1,,period_number,period_number,period_number,Passthrough,,main,1,30,true,true,2026-02-12 11:55:21.9200000,system,2026-03-31 14:04:11.7733333,lineage_fix
+490,43,46,,,1,,month_number,month_number,month_number,Passthrough,,main,1,31,true,true,2026-02-12 11:55:21.9200000,system,2026-03-31 14:04:11.7733333,lineage_fix
+491,43,46,,,1,,header_posted_date,header_posted_date,header_posted_date,Passthrough,,main,1,32,true,true,2026-02-12 11:55:21.9266667,system,2026-03-31 14:04:11.7733333,lineage_fix
+492,43,46,,,1,,"",loaded_at,CURRENT_TIMESTAMP,Silver load timestamp,,main,1,33,true,true,2026-02-12 11:55:21.9300000,system,2026-03-31 14:04:11.7733333,lineage_fix
+493,43,46,,,1,,loaded_at,loaded_at_source,CAST(loaded_at AS TIMESTAMP),Bronze load timestamp,,main,1,34,true,true,2026-02-12 11:55:21.9300000,system,2026-03-31 14:04:11.7733333,lineage_fix
+494,43,46,,,1,,"",is_deleted_flag,CAST(0 AS TINYINT),Soft delete flag,,main,1,35,true,true,2026-02-12 11:55:21.9333333,system,2026-03-31 14:04:11.7733333,lineage_fix
+500,61,65,,,2,,object_value_dbid,account_group_id,"md5(concat_ws(""-"", object_value_dbid, 'xlg'))",Surrogate key,,main,1,1,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+501,61,65,,,2,,owner_dbid,owner_id,"md5(concat_ws(""-"", owner_dbid, 'xlg'))",Owner FK,,main,1,2,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+502,61,65,,,2,,,source_system_id,"md5(concat_ws(""-"", '1', 'xlg'))",Source system hash,,main,1,3,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+503,61,65,,,1,,object_value_dbid,account_group_bk,object_value_dbid,Business key passthrough,,main,1,4,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+504,61,65,,,1,,object_value_code,account_group_code,object_value_code,Code passthrough,,main,1,5,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+505,61,65,,,1,,object_value_description,account_group_name,object_value_description,Name passthrough,,main,1,6,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+506,61,65,,,2,,,account_group_description,"concat_ws("" - "", object_value_code, object_value_description)",Code + description,,main,1,7,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+507,61,65,,,2,,object_value_level1_dbid,account_group_level1_id,"md5(concat_ws(""-"", object_value_level1_dbid, 'xlg'))",Level 1 surrogate key,,main,1,8,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+508,61,65,,,1,,object_value_level1_dbid,account_group_level1_bk,object_value_level1_dbid,Level 1 BK,,main,1,9,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+509,61,65,,,1,,object_value_level1_code,account_group_level1_code,object_value_level1_code,Level 1 code,,main,1,10,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+510,61,65,,,1,,object_value_level1_description,account_group_level1_name,object_value_level1_description,Level 1 name,,main,1,11,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+511,61,65,,,2,,,account_group_level1_description,"concat_ws("" - "", object_value_level1_code, object_value_level1_description)",Level 1 description,,main,1,12,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+512,61,65,,,2,,object_value_level2_dbid,account_group_level2_id,"md5(concat_ws(""-"", object_value_level2_dbid, 'xlg'))",Level 2 surrogate key,,main,1,13,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+513,61,65,,,1,,object_value_level2_dbid,account_group_level2_bk,object_value_level2_dbid,Level 2 BK,,main,1,14,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+514,61,65,,,1,,object_value_level2_code,account_group_level2_code,object_value_level2_code,Level 2 code,,main,1,15,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+515,61,65,,,1,,object_value_level2_description,account_group_level2_name,object_value_level2_description,Level 2 name,,main,1,16,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+516,61,65,,,2,,,account_group_level2_description,"concat_ws("" - "", object_value_level2_code, object_value_level2_description)",Level 2 description,,main,1,17,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+517,61,65,,,2,,object_value_level3_dbid,account_group_level3_id,"md5(concat_ws(""-"", object_value_level3_dbid, 'xlg'))",Level 3 surrogate key,,main,1,18,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+518,61,65,,,1,,object_value_level3_dbid,account_group_level3_bk,object_value_level3_dbid,Level 3 BK,,main,1,19,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+519,61,65,,,1,,object_value_level3_code,account_group_level3_code,object_value_level3_code,Level 3 code,,main,1,20,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+520,61,65,,,1,,object_value_level3_description,account_group_level3_name,object_value_level3_description,Level 3 name,,main,1,21,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+521,61,65,,,2,,,account_group_level3_description,"concat_ws("" - "", object_value_level3_code, object_value_level3_description)",Level 3 description,,main,1,22,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+522,61,65,,,2,,object_value_level4_dbid,account_group_level4_id,"md5(concat_ws(""-"", object_value_level4_dbid, 'xlg'))",Level 4 surrogate key,,main,1,23,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+523,61,65,,,1,,object_value_level4_dbid,account_group_level4_bk,object_value_level4_dbid,Level 4 BK,,main,1,24,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+524,61,65,,,1,,object_value_level4_code,account_group_level4_code,object_value_level4_code,Level 4 code,,main,1,25,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+525,61,65,,,1,,object_value_level4_description,account_group_level4_name,object_value_level4_description,Level 4 name,,main,1,26,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+526,61,65,,,2,,,account_group_level4_description,"concat_ws("" - "", object_value_level4_code, object_value_level4_description)",Level 4 description,,main,1,27,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+527,61,65,,,1,,created_at,created_at,created_at,Created timestamp,,main,1,28,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+528,61,65,,,1,,modified_at,modified_at,modified_at,Modified timestamp,,main,1,29,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+529,61,65,,,1,,loaded_at,loaded_at_source,loaded_at,Source load timestamp,,main,1,30,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+530,61,65,,,2,,,loaded_at,CURRENT_TIMESTAMP,Silver load timestamp,,main,1,31,true,true,2026-03-16 12:00:00.0000000,system,2026-03-18 14:32:37.1666667,ansi_sql_migration
+531,61,65,,,2,,,is_deleted_flag,CAST(0 AS TINYINT),Soft delete flag,,main,1,32,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+532,,65,,,1,,status_group_id,account_group_id,status_group_id,Unknown member ID,,unknown_member,1,1,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+533,,65,,,2,,,owner_id,CAST(NULL AS STRING),Null owner,,unknown_member,1,2,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+534,,65,,,2,,,source_system_id,CAST(NULL AS STRING),Null source system,,unknown_member,1,3,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+535,,65,,,2,,,account_group_bk,CAST(NULL AS BIGINT),Null BK,,unknown_member,1,4,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+536,,65,,,1,,status_group_code,account_group_code,status_group_code,Status group code,,unknown_member,1,5,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+537,,65,,,1,,status_group_description,account_group_name,status_group_description,Status group description,,unknown_member,1,6,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+538,,65,,,2,,,account_group_description,"concat_ws("" - "", status_group_code, status_group_description)",Status group combined,,unknown_member,1,7,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+539,,65,,,2,,,account_group_level1_id,CAST(NULL AS STRING),Null level 1 ID,,unknown_member,1,8,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+540,,65,,,2,,,account_group_level1_bk,CAST(NULL AS BIGINT),Null level 1 BK,,unknown_member,1,9,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+541,,65,,,2,,,account_group_level1_code,CAST(NULL AS STRING),Null level 1 code,,unknown_member,1,10,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+542,,65,,,2,,,account_group_level1_name,CAST(NULL AS STRING),Null level 1 name,,unknown_member,1,11,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+543,,65,,,2,,,account_group_level1_description,CAST(NULL AS STRING),Null level 1 desc,,unknown_member,1,12,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+544,,65,,,2,,,account_group_level2_id,CAST(NULL AS STRING),Null level 2 ID,,unknown_member,1,13,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+545,,65,,,2,,,account_group_level2_bk,CAST(NULL AS BIGINT),Null level 2 BK,,unknown_member,1,14,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+546,,65,,,2,,,account_group_level2_code,CAST(NULL AS STRING),Null level 2 code,,unknown_member,1,15,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+547,,65,,,2,,,account_group_level2_name,CAST(NULL AS STRING),Null level 2 name,,unknown_member,1,16,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+548,,65,,,2,,,account_group_level2_description,CAST(NULL AS STRING),Null level 2 desc,,unknown_member,1,17,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+549,,65,,,2,,,account_group_level3_id,CAST(NULL AS STRING),Null level 3 ID,,unknown_member,1,18,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+550,,65,,,2,,,account_group_level3_bk,CAST(NULL AS BIGINT),Null level 3 BK,,unknown_member,1,19,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+551,,65,,,2,,,account_group_level3_code,CAST(NULL AS STRING),Null level 3 code,,unknown_member,1,20,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+552,,65,,,2,,,account_group_level3_name,CAST(NULL AS STRING),Null level 3 name,,unknown_member,1,21,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+553,,65,,,2,,,account_group_level3_description,CAST(NULL AS STRING),Null level 3 desc,,unknown_member,1,22,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+554,,65,,,2,,,account_group_level4_id,CAST(NULL AS STRING),Null level 4 ID,,unknown_member,1,23,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+555,,65,,,2,,,account_group_level4_bk,CAST(NULL AS BIGINT),Null level 4 BK,,unknown_member,1,24,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+556,,65,,,2,,,account_group_level4_code,CAST(NULL AS STRING),Null level 4 code,,unknown_member,1,25,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+557,,65,,,2,,,account_group_level4_name,CAST(NULL AS STRING),Null level 4 name,,unknown_member,1,26,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+558,,65,,,2,,,account_group_level4_description,CAST(NULL AS STRING),Null level 4 desc,,unknown_member,1,27,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+559,,65,,,1,,created_at,created_at,created_at,Created timestamp,,unknown_member,1,28,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+560,,65,,,1,,modified_at,modified_at,modified_at,Modified timestamp,,unknown_member,1,29,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+561,,65,,,1,,loaded_at,loaded_at_source,loaded_at,Source load timestamp,,unknown_member,1,30,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+562,,65,,,2,,,loaded_at,CURRENT_TIMESTAMP,Silver load timestamp,,unknown_member,1,31,true,true,2026-03-16 12:00:00.0000000,system,2026-03-18 14:32:37.1666667,ansi_sql_migration
+563,,65,,,2,,,is_deleted_flag,CAST(0 AS TINYINT),Soft delete flag,,unknown_member,1,32,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+564,61,66,,,2,,object_value_dbid,ledger_type_id,"md5(concat_ws(""-"", object_value_dbid, 'xlg'))",Surrogate key,,main,1,1,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+565,61,66,,,2,,owner_dbid,owner_id,"md5(concat_ws(""-"", owner_dbid, 'xlg'))",Owner FK,,main,1,2,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+566,61,66,,,2,,,source_system_id,"md5(concat_ws(""-"", '1', 'xlg'))",Source system hash,,main,1,3,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+567,61,66,,,1,,object_value_dbid,ledger_type_bk,object_value_dbid,Business key passthrough,,main,1,4,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+568,61,66,,,1,,object_value_code,ledger_type_code,object_value_code,Code passthrough,,main,1,5,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+569,61,66,,,1,,object_value_description,ledger_type_name,object_value_description,Name passthrough,,main,1,6,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+570,61,66,,,2,,,ledger_type_description,"concat_ws("" - "", object_value_code, object_value_description)",Code + description,,main,1,7,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+571,61,66,,,2,,object_value_level1_dbid,ledger_type_level1_id,"md5(concat_ws(""-"", object_value_level1_dbid, 'xlg'))",Level 1 surrogate key,,main,1,8,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+572,61,66,,,1,,object_value_level1_dbid,ledger_type_level1_bk,object_value_level1_dbid,Level 1 BK,,main,1,9,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+573,61,66,,,1,,object_value_level1_code,ledger_type_level1_code,object_value_level1_code,Level 1 code,,main,1,10,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+574,61,66,,,1,,object_value_level1_description,ledger_type_level1_name,object_value_level1_description,Level 1 name,,main,1,11,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+575,61,66,,,2,,,ledger_type_level1_description,"concat_ws("" - "", object_value_level1_code, object_value_level1_description)",Level 1 description,,main,1,12,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+576,61,66,,,2,,object_value_level2_dbid,ledger_type_level2_id,"md5(concat_ws(""-"", object_value_level2_dbid, 'xlg'))",Level 2 surrogate key,,main,1,13,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+577,61,66,,,1,,object_value_level2_dbid,ledger_type_level2_bk,object_value_level2_dbid,Level 2 BK,,main,1,14,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+578,61,66,,,1,,object_value_level2_code,ledger_type_level2_code,object_value_level2_code,Level 2 code,,main,1,15,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+579,61,66,,,1,,object_value_level2_description,ledger_type_level2_name,object_value_level2_description,Level 2 name,,main,1,16,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+580,61,66,,,2,,,ledger_type_level2_description,"concat_ws("" - "", object_value_level2_code, object_value_level2_description)",Level 2 description,,main,1,17,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+581,61,66,,,2,,object_value_level3_dbid,ledger_type_level3_id,"md5(concat_ws(""-"", object_value_level3_dbid, 'xlg'))",Level 3 surrogate key,,main,1,18,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+582,61,66,,,1,,object_value_level3_dbid,ledger_type_level3_bk,object_value_level3_dbid,Level 3 BK,,main,1,19,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+583,61,66,,,1,,object_value_level3_code,ledger_type_level3_code,object_value_level3_code,Level 3 code,,main,1,20,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+584,61,66,,,1,,object_value_level3_description,ledger_type_level3_name,object_value_level3_description,Level 3 name,,main,1,21,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+585,61,66,,,2,,,ledger_type_level3_description,"concat_ws("" - "", object_value_level3_code, object_value_level3_description)",Level 3 description,,main,1,22,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+586,61,66,,,2,,object_value_level4_dbid,ledger_type_level4_id,"md5(concat_ws(""-"", object_value_level4_dbid, 'xlg'))",Level 4 surrogate key,,main,1,23,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+587,61,66,,,1,,object_value_level4_dbid,ledger_type_level4_bk,object_value_level4_dbid,Level 4 BK,,main,1,24,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+588,61,66,,,1,,object_value_level4_code,ledger_type_level4_code,object_value_level4_code,Level 4 code,,main,1,25,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+589,61,66,,,1,,object_value_level4_description,ledger_type_level4_name,object_value_level4_description,Level 4 name,,main,1,26,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+590,61,66,,,2,,,ledger_type_level4_description,"concat_ws("" - "", object_value_level4_code, object_value_level4_description)",Level 4 description,,main,1,27,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+591,61,66,,,1,,created_at,created_at,created_at,Created timestamp,,main,1,28,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+592,61,66,,,1,,modified_at,modified_at,modified_at,Modified timestamp,,main,1,29,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+593,61,66,,,1,,loaded_at,loaded_at_source,loaded_at,Source load timestamp,,main,1,30,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+594,61,66,,,2,,,loaded_at,CURRENT_TIMESTAMP,Silver load timestamp,,main,1,31,true,true,2026-03-16 12:00:00.0000000,system,2026-03-18 14:32:37.1666667,ansi_sql_migration
+595,61,66,,,2,,,is_deleted_flag,CAST(0 AS TINYINT),Soft delete flag,,main,1,32,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+596,,66,,,1,,status_group_id,ledger_type_id,status_group_id,Unknown member ID,,unknown_member,1,1,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+597,,66,,,2,,,owner_id,CAST(NULL AS STRING),Null owner,,unknown_member,1,2,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+598,,66,,,2,,,source_system_id,CAST(NULL AS STRING),Null source system,,unknown_member,1,3,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+599,,66,,,2,,,ledger_type_bk,CAST(NULL AS BIGINT),Null BK,,unknown_member,1,4,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+600,,66,,,1,,status_group_code,ledger_type_code,status_group_code,Status group code,,unknown_member,1,5,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+601,,66,,,1,,status_group_description,ledger_type_name,status_group_description,Status group description,,unknown_member,1,6,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+602,,66,,,2,,,ledger_type_description,"concat_ws("" - "", status_group_code, status_group_description)",Status group combined,,unknown_member,1,7,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+603,,66,,,2,,,ledger_type_level1_id,CAST(NULL AS STRING),Null level 1 ID,,unknown_member,1,8,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+604,,66,,,2,,,ledger_type_level1_bk,CAST(NULL AS BIGINT),Null level 1 BK,,unknown_member,1,9,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+605,,66,,,2,,,ledger_type_level1_code,CAST(NULL AS STRING),Null level 1 code,,unknown_member,1,10,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+606,,66,,,2,,,ledger_type_level1_name,CAST(NULL AS STRING),Null level 1 name,,unknown_member,1,11,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+607,,66,,,2,,,ledger_type_level1_description,CAST(NULL AS STRING),Null level 1 desc,,unknown_member,1,12,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+608,,66,,,2,,,ledger_type_level2_id,CAST(NULL AS STRING),Null level 2 ID,,unknown_member,1,13,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+609,,66,,,2,,,ledger_type_level2_bk,CAST(NULL AS BIGINT),Null level 2 BK,,unknown_member,1,14,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+610,,66,,,2,,,ledger_type_level2_code,CAST(NULL AS STRING),Null level 2 code,,unknown_member,1,15,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+611,,66,,,2,,,ledger_type_level2_name,CAST(NULL AS STRING),Null level 2 name,,unknown_member,1,16,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+612,,66,,,2,,,ledger_type_level2_description,CAST(NULL AS STRING),Null level 2 desc,,unknown_member,1,17,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+613,,66,,,2,,,ledger_type_level3_id,CAST(NULL AS STRING),Null level 3 ID,,unknown_member,1,18,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+614,,66,,,2,,,ledger_type_level3_bk,CAST(NULL AS BIGINT),Null level 3 BK,,unknown_member,1,19,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+615,,66,,,2,,,ledger_type_level3_code,CAST(NULL AS STRING),Null level 3 code,,unknown_member,1,20,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+616,,66,,,2,,,ledger_type_level3_name,CAST(NULL AS STRING),Null level 3 name,,unknown_member,1,21,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+617,,66,,,2,,,ledger_type_level3_description,CAST(NULL AS STRING),Null level 3 desc,,unknown_member,1,22,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+618,,66,,,2,,,ledger_type_level4_id,CAST(NULL AS STRING),Null level 4 ID,,unknown_member,1,23,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+619,,66,,,2,,,ledger_type_level4_bk,CAST(NULL AS BIGINT),Null level 4 BK,,unknown_member,1,24,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+620,,66,,,2,,,ledger_type_level4_code,CAST(NULL AS STRING),Null level 4 code,,unknown_member,1,25,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+621,,66,,,2,,,ledger_type_level4_name,CAST(NULL AS STRING),Null level 4 name,,unknown_member,1,26,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+622,,66,,,2,,,ledger_type_level4_description,CAST(NULL AS STRING),Null level 4 desc,,unknown_member,1,27,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+623,,66,,,1,,created_at,created_at,created_at,Created timestamp,,unknown_member,1,28,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+624,,66,,,1,,modified_at,modified_at,modified_at,Modified timestamp,,unknown_member,1,29,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+625,,66,,,1,,loaded_at,loaded_at_source,loaded_at,Source load timestamp,,unknown_member,1,30,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+626,,66,,,2,,,loaded_at,CURRENT_TIMESTAMP,Silver load timestamp,,unknown_member,1,31,true,true,2026-03-16 12:00:00.0000000,system,2026-03-18 14:32:37.1666667,ansi_sql_migration
+627,,66,,,2,,,is_deleted_flag,CAST(0 AS TINYINT),Soft delete flag,,unknown_member,1,32,true,true,2026-03-16 12:00:00.0000000,system,2026-03-16 12:00:00.0000000,
+700,44,47,,,1,,account_id,account_id,account.account_id,,,gold,,1,true,true,2026-02-16 09:13:20.3666667,system,2026-02-16 09:13:20.3666667,
+701,44,47,,,1,,owner_id,owner_id,account.owner_id,,,gold,,2,true,true,2026-02-16 09:13:20.3666667,system,2026-02-16 09:13:20.3666667,
+702,44,47,,,1,,chart_of_account_id,chart_of_account_id,chart_of_account_id,,,gold,,3,true,false,2026-02-16 09:13:20.3666667,system,2026-03-18 15:19:30.7566667,metadata_generator
+703,44,47,,,1,,system_account_id,system_account_id,system_account_id,,,gold,,4,true,false,2026-02-16 09:13:20.3666667,system,2026-03-18 15:19:30.7600000,metadata_generator
+704,44,47,,,1,,account_indicator_id,account_indicator_id,account_indicator_id,,,gold,,5,true,false,2026-02-16 09:13:20.3666667,system,2026-03-18 15:19:30.7633333,metadata_generator
+705,44,47,,,1,,ledger_type_id,ledger_type_id,account.ledger_type_id,,,gold,,6,true,true,2026-02-16 09:13:20.3666667,system,2026-02-16 09:13:20.3666667,
+706,44,47,,,1,,account_code,account_code,account.account_code,,,gold,,7,true,true,2026-02-16 09:13:20.3666667,system,2026-02-16 09:13:20.3666667,
+707,44,47,,,1,,account_name,account_name,account.account_name,,,gold,,8,true,true,2026-02-16 09:13:20.3666667,system,2026-02-16 09:13:20.3666667,
+708,44,47,,,1,,account_description,account_description,account_description,,,gold,,9,true,false,2026-02-16 09:13:20.3666667,system,2026-03-18 15:19:30.7666667,metadata_generator
+709,44,47,,,1,,account_description_translated,account_description_translated,account_description_translated,,,gold,,10,true,false,2026-02-16 09:13:20.3666667,system,2026-03-18 15:19:30.7700000,metadata_generator
+710,44,47,,,1,,is_balance_sheet,is_balance_sheet,is_balance_sheet,,,gold,,11,true,false,2026-02-16 09:13:20.3666667,system,2026-03-18 15:19:30.7700000,metadata_generator
+711,44,47,,,1,,is_asset,is_asset,is_asset,,,gold,,12,true,false,2026-02-16 09:13:20.3666667,system,2026-03-18 15:19:30.7733333,metadata_generator
+712,44,47,,,1,,is_cost,is_cost,is_cost,,,gold,,13,true,false,2026-02-16 09:13:20.3666667,system,2026-03-18 15:19:30.7766667,metadata_generator
+713,44,47,,,1,,is_credit,is_credit,is_credit,,,gold,,14,true,false,2026-02-16 09:13:20.3666667,system,2026-03-18 15:19:30.7800000,metadata_generator
+714,44,47,,,1,,is_equity,is_equity,is_equity,,,gold,,15,true,false,2026-02-16 09:13:20.3666667,system,2026-03-18 15:19:30.7800000,metadata_generator
+715,44,47,,,1,,is_finance,is_finance,is_finance,,,gold,,16,true,false,2026-02-16 09:13:20.3666667,system,2026-03-18 15:19:30.7833333,metadata_generator
+716,44,47,,,1,,is_liabilities,is_liabilities,is_liabilities,,,gold,,17,true,false,2026-02-16 09:13:20.3666667,system,2026-03-18 15:19:30.7866667,metadata_generator
+717,44,47,,,1,,is_posting,is_posting,is_posting,,,gold,,18,true,false,2026-02-16 09:13:20.3666667,system,2026-03-18 15:19:30.7900000,metadata_generator
+718,44,47,,,1,,is_revenue,is_revenue,is_revenue,,,gold,,19,true,false,2026-02-16 09:13:20.3666667,system,2026-03-18 15:19:30.7933333,metadata_generator
+719,44,47,,,1,,is_group,is_group,is_group,,,gold,,20,true,false,2026-02-16 09:13:20.3666667,system,2026-03-18 15:19:30.7966667,metadata_generator
+720,65,47,,,1,,account_group_id,account_group_id,account.account_group_id,,,gold,,21,true,true,2026-02-16 09:13:20.3700000,system,2026-02-16 09:13:20.3700000,
+721,65,47,,,1,,account_group_code,account_group_code,account_group_code,,,gold,,22,true,false,2026-02-16 09:13:20.3700000,system,2026-03-18 15:19:30.8000000,metadata_generator
+722,65,47,,,1,,account_group_name,account_group_name,account_group_name,,,gold,,23,true,false,2026-02-16 09:13:20.3700000,system,2026-03-18 15:19:30.8000000,metadata_generator
+723,65,47,,,1,,account_group_description,account_group_description,account_group_description,,,gold,,24,true,false,2026-02-16 09:13:20.3700000,system,2026-03-18 15:19:30.8033333,metadata_generator
+724,65,47,,,1,,account_group_level1_id,account_group_level1_id,account_group_level1_id,,,gold,,25,true,false,2026-02-16 09:13:20.3700000,system,2026-03-18 15:19:30.8066667,metadata_generator
+725,65,47,,,1,,account_group_level1_code,account_group_level1_code,account_group_level1_code,,,gold,,26,true,false,2026-02-16 09:13:20.3700000,system,2026-03-18 15:19:30.8100000,metadata_generator
+726,65,47,,,1,,account_group_level1_name,account_group_level1_name,account_group_level1_name,,,gold,,27,true,false,2026-02-16 09:13:20.3700000,system,2026-03-18 15:19:30.8100000,metadata_generator
+727,65,47,,,1,,account_group_level1_description,account_group_level1_description,account_group_level1_description,,,gold,,28,true,false,2026-02-16 09:13:20.3700000,system,2026-03-18 15:19:30.8133333,metadata_generator
+728,65,47,,,1,,account_group_level2_id,account_group_level2_id,account_group_level2_id,,,gold,,29,true,false,2026-02-16 09:13:20.3700000,system,2026-03-18 15:19:30.8166667,metadata_generator
+729,65,47,,,1,,account_group_level2_code,account_group_level2_code,account_group_level2_code,,,gold,,30,true,false,2026-02-16 09:13:20.3700000,system,2026-03-18 15:19:30.8200000,metadata_generator
+730,65,47,,,1,,account_group_level2_name,account_group_level2_name,account_group_level2_name,,,gold,,31,true,false,2026-02-16 09:13:20.3700000,system,2026-03-18 15:19:30.8200000,metadata_generator
+731,65,47,,,1,,account_group_level2_description,account_group_level2_description,account_group_level2_description,,,gold,,32,true,false,2026-02-16 09:13:20.3700000,system,2026-03-18 15:19:30.8233333,metadata_generator
+732,65,47,,,1,,account_group_level3_id,account_group_level3_id,account_group_level3_id,,,gold,,33,true,false,2026-02-16 09:13:20.3700000,system,2026-03-18 15:19:30.8266667,metadata_generator
+733,65,47,,,1,,account_group_level3_code,account_group_level3_code,account_group_level3_code,,,gold,,34,true,false,2026-02-16 09:13:20.3700000,system,2026-03-18 15:19:30.8300000,metadata_generator
+734,65,47,,,1,,account_group_level3_name,account_group_level3_name,account_group_level3_name,,,gold,,35,true,false,2026-02-16 09:13:20.3700000,system,2026-03-18 15:19:30.8333333,metadata_generator
+735,65,47,,,1,,account_group_level3_description,account_group_level3_description,account_group_level3_description,,,gold,,36,true,false,2026-02-16 09:13:20.3700000,system,2026-03-18 15:19:30.8333333,metadata_generator
+736,65,47,,,1,,account_group_level4_id,account_group_level4_id,account_group_level4_id,,,gold,,37,true,false,2026-02-16 09:13:20.3700000,system,2026-03-18 15:19:30.8366667,metadata_generator
+737,65,47,,,1,,account_group_level4_code,account_group_level4_code,account_group_level4_code,,,gold,,38,true,false,2026-02-16 09:13:20.3700000,system,2026-03-18 15:19:30.8400000,metadata_generator
+738,65,47,,,1,,account_group_level4_name,account_group_level4_name,account_group_level4_name,,,gold,,39,true,false,2026-02-16 09:13:20.3700000,system,2026-03-18 15:19:30.8433333,metadata_generator
+739,65,47,,,1,,account_group_level4_description,account_group_level4_description,account_group_level4_description,,,gold,,40,true,false,2026-02-16 09:13:20.3700000,system,2026-03-18 15:19:30.8433333,metadata_generator
+751,52,48,,,1,,fiscal_year,fiscal_year,period.fiscal_year,,,gold,,38,true,true,2026-02-16 09:13:20.3766667,system,2026-02-16 09:13:20.3766667,
+752,52,48,,,1,,fiscal_period,fiscal_period,period.fiscal_period,,,gold,,39,true,true,2026-02-16 09:13:20.3766667,system,2026-02-16 09:13:20.3766667,
+753,52,48,,,1,,period_id,period_id,period.period_id,,,gold,,40,true,true,2026-02-16 09:13:20.3766667,system,2026-02-16 09:13:20.3766667,
+760,48,49,,,1,,account_id,account_id,all_account_periods.account_id,,,gold,,1,true,true,2026-02-16 09:13:20.3800000,system,2026-02-16 09:13:20.3800000,
+761,48,49,,,1,,fiscal_year,fiscal_year,all_account_periods.fiscal_year,,,gold,,2,true,true,2026-02-16 09:13:20.3800000,system,2026-02-16 09:13:20.3800000,
+762,48,49,,,1,,fiscal_period,fiscal_period,all_account_periods.fiscal_period,,,gold,,3,true,true,2026-02-16 09:13:20.3800000,system,2026-02-16 09:13:20.3800000,
+763,66,49,,,1,,ledger_type_id,ledger_type_id,all_account_periods.ledger_type_id,,,gold,,4,true,true,2026-02-16 09:13:20.3800000,system,2026-02-16 09:13:20.3800000,
+764,48,49,,,1,,period_id,period_id,all_account_periods.period_id,,,gold,,5,true,true,2026-02-16 09:13:20.3800000,system,2026-02-16 09:13:20.3800000,
+765,46,49,,,1,,currency_id,currency_id,transaction.currency_id,,,gold,,6,true,true,2026-02-16 09:13:20.3800000,system,2026-02-16 09:13:20.3800000,
+766,46,49,,,1,,cost_centre_id,cost_centre_id,transaction.cost_centre_id,,,gold,,7,true,true,2026-02-16 09:13:20.3800000,system,2026-02-16 09:13:20.3800000,
+767,46,49,,,1,,project_id,project_id,transaction.project_id,,,gold,,8,true,true,2026-02-16 09:13:20.3800000,system,2026-02-16 09:13:20.3800000,
+768,46,49,,,1,,position_reference_id,position_reference_id,transaction.position_reference_id,,,gold,,9,true,true,2026-02-16 09:13:20.3800000,system,2026-02-16 09:13:20.3800000,
+769,46,49,,,1,,asset_class_id,asset_class_id,transaction.asset_class_id,,,gold,,10,true,true,2026-02-16 09:13:20.3800000,system,2026-02-16 09:13:20.3800000,
+770,46,49,,,1,,cost_revenue_period_id,cost_revenue_period_id,transaction.cost_revenue_period_id,,,gold,,11,true,true,2026-02-16 09:13:20.3800000,system,2026-02-16 09:13:20.3800000,
+771,46,49,,,1,,owner_id,owner_id,all_account_periods.owner_id,,,gold,,12,true,true,2026-02-16 09:13:20.3800000,system,2026-02-16 09:13:20.3800000,
+772,46,49,,,1,,transaction_amount,monthly_amount,"SUM(COALESCE(transaction.transaction_amount, 0))",,,gold,,13,true,true,2026-02-16 09:13:20.3800000,system,2026-02-16 09:13:20.3800000,
+780,49,34,,,1,,account_id,account_id,base_aggregation.account_id,,,gold,,1,true,true,2026-02-16 09:13:20.3866667,system,2026-02-16 09:13:20.3866667,
+781,49,34,,,1,,ledger_type_id,ledger_type_id,base_aggregation.ledger_type_id,,,gold,,2,true,true,2026-02-16 09:13:20.3866667,system,2026-02-16 09:13:20.3866667,
+782,49,34,,,1,,period_id,period_id,base_aggregation.period_id,,,gold,,3,true,true,2026-02-16 09:13:20.3866667,system,2026-02-16 09:13:20.3866667,
+783,49,34,,,1,,currency_id,currency_id,base_aggregation.currency_id,,,gold,,4,true,true,2026-02-16 09:13:20.3866667,system,2026-02-16 09:13:20.3866667,
+784,49,34,,,1,,cost_centre_id,cost_centre_id,base_aggregation.cost_centre_id,,,gold,,5,true,true,2026-02-16 09:13:20.3866667,system,2026-02-16 09:13:20.3866667,
+785,49,34,,,1,,project_id,project_id,base_aggregation.project_id,,,gold,,6,true,true,2026-02-16 09:13:20.3866667,system,2026-02-16 09:13:20.3866667,
+786,49,34,,,1,,position_reference_id,position_reference_id,base_aggregation.position_reference_id,,,gold,,7,true,true,2026-02-16 09:13:20.3866667,system,2026-02-16 09:13:20.3866667,
+787,49,34,,,1,,asset_class_id,asset_class_id,base_aggregation.asset_class_id,,,gold,,8,true,true,2026-02-16 09:13:20.3866667,system,2026-02-16 09:13:20.3866667,
+788,49,34,,,1,,cost_revenue_period_id,cost_revenue_period_id,base_aggregation.cost_revenue_period_id,,,gold,,9,true,true,2026-02-16 09:13:20.3866667,system,2026-02-16 09:13:20.3866667,
+789,49,34,,,1,,owner_id,owner_id,base_aggregation.owner_id,,,gold,,10,true,true,2026-02-16 09:13:20.3866667,system,2026-02-16 09:13:20.3866667,
+790,49,34,,,1,,fiscal_year,fiscal_year,base_aggregation.fiscal_year,,,gold,,11,true,true,2026-02-16 09:13:20.3866667,system,2026-02-16 09:13:20.3866667,
+791,49,34,,,1,,fiscal_period,fiscal_period,base_aggregation.fiscal_period,,,gold,,12,true,true,2026-02-16 09:13:20.3866667,system,2026-02-16 09:13:20.3866667,
+792,49,34,,,1,,monthly_amount,gl_account_balance,"COALESCE(base_aggregation.monthly_amount, 0)",,,gold,,13,true,true,2026-02-16 09:13:20.3866667,system,2026-02-16 09:13:20.3866667,
+793,,34,,,1,,,gl_account_debit_amount,0,,,gold,,14,true,true,2026-02-16 09:13:20.3866667,system,2026-02-16 09:13:20.3866667,
+794,,34,,,1,,,gl_account_credit_amount,0,,,gold,,15,true,true,2026-02-16 09:13:20.3866667,system,2026-02-16 09:13:20.3866667,
+800,44,48,,,1,,account_id,account_id,account.account_id,,,gold,,1,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+801,44,48,,,1,,account_group_id,account_group_id,account.account_group_id,,,gold,,2,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+802,44,48,,,1,,account_group_level1_id,account_group_level1_id,account.account_group_level1_id,,,gold,,3,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+803,44,48,,,1,,account_group_level2_id,account_group_level2_id,account.account_group_level2_id,,,gold,,4,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+804,44,48,,,1,,account_group_level3_id,account_group_level3_id,account.account_group_level3_id,,,gold,,5,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+805,44,48,,,1,,account_group_level4_id,account_group_level4_id,account.account_group_level4_id,,,gold,,6,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+806,44,48,,,1,,account_indicator_id,account_indicator_id,account.account_indicator_id,,,gold,,7,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+807,44,48,,,1,,chart_of_account_id,chart_of_account_id,account.chart_of_account_id,,,gold,,8,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+808,44,48,,,1,,ledger_type_id,ledger_type_id,account.ledger_type_id,,,gold,,9,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+809,44,48,,,1,,owner_id,owner_id,account.owner_id,,,gold,,10,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+810,44,48,,,1,,system_account_id,system_account_id,account.system_account_id,,,gold,,11,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+811,44,48,,,1,,source_system_id,source_system_id,account.source_system_id,,,gold,,12,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+812,44,48,,,1,,source_system_bk,source_system_bk,account.source_system_bk,,,gold,,13,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+813,44,48,,,1,,account_bk,account_bk,account.account_bk,,,gold,,14,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+814,44,48,,,1,,account_group_bk,account_group_bk,account.account_group_bk,,,gold,,15,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+815,44,48,,,1,,account_group_level1_bk,account_group_level1_bk,account.account_group_level1_bk,,,gold,,16,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+816,44,48,,,1,,account_group_level2_bk,account_group_level2_bk,account.account_group_level2_bk,,,gold,,17,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+817,44,48,,,1,,account_group_level3_bk,account_group_level3_bk,account.account_group_level3_bk,,,gold,,18,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+818,44,48,,,1,,account_group_level4_bk,account_group_level4_bk,account.account_group_level4_bk,,,gold,,19,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+819,44,48,,,1,,account_indicator_bk,account_indicator_bk,account.account_indicator_bk,,,gold,,20,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+820,44,48,,,1,,chart_of_account_bk,chart_of_account_bk,account.chart_of_account_bk,,,gold,,21,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+821,44,48,,,1,,ledger_type_bk,ledger_type_bk,account.ledger_type_bk,,,gold,,22,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+822,44,48,,,1,,owner_bk,owner_bk,account.owner_bk,,,gold,,23,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+823,44,48,,,1,,account_code,account_code,account.account_code,,,gold,,24,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+824,44,48,,,1,,account_name,account_name,account.account_name,,,gold,,25,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+825,44,48,,,1,,account_description,account_description,account.account_description,,,gold,,26,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+826,44,48,,,1,,account_description_translated,account_description_translated,account.account_description_translated,,,gold,,27,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+827,44,48,,,1,,is_balance_sheet,is_balance_sheet,account.is_balance_sheet,,,gold,,28,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+828,44,48,,,1,,is_asset,is_asset,account.is_asset,,,gold,,29,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+829,44,48,,,1,,is_cost,is_cost,account.is_cost,,,gold,,30,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+830,44,48,,,1,,is_credit,is_credit,account.is_credit,,,gold,,31,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+831,44,48,,,1,,is_equity,is_equity,account.is_equity,,,gold,,32,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+832,44,48,,,1,,is_finance,is_finance,account.is_finance,,,gold,,33,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+833,44,48,,,1,,is_liabilities,is_liabilities,account.is_liabilities,,,gold,,34,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+834,44,48,,,1,,is_posting,is_posting,account.is_posting,,,gold,,35,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+835,44,48,,,1,,is_revenue,is_revenue,account.is_revenue,,,gold,,36,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+836,44,48,,,1,,is_group,is_group,account.is_group,,,gold,,37,true,true,2026-02-16 09:39:40.4033333,system,2026-02-16 09:39:40.4033333,
+900,50,51,,,1,,dbId,period_dbid,dbId,,,main,1,1,true,true,2026-02-16 12:48:34.1300000,system,2026-02-16 12:48:34.1300000,
+901,50,51,,,1,,code,period_code,code,,,main,1,2,true,true,2026-02-16 12:48:34.1300000,system,2026-02-16 12:48:34.1300000,
+902,50,51,,,1,,description,period_description,description,,,main,1,3,true,true,2026-02-16 12:48:34.1300000,system,2026-02-16 12:48:34.1300000,
+903,50,51,,,1,,fromDate,date_from,fromDate,,,main,1,4,true,true,2026-02-16 12:48:34.1300000,system,2026-02-16 12:48:34.1300000,
+904,50,51,,,1,,toDate,date_to,toDate,,,main,1,5,true,true,2026-02-16 12:48:34.1300000,system,2026-02-16 12:48:34.1300000,
+905,50,51,,,1,,year,year,year,,,main,1,6,true,true,2026-02-16 12:48:34.1300000,system,2026-02-16 12:48:34.1300000,
+906,50,51,,,1,,fiscalYear,fiscal_year,fiscalYear,,,main,1,7,true,true,2026-02-16 12:48:34.1300000,system,2026-02-16 12:48:34.1300000,
+907,50,51,,,1,,fiscalPeriod,fiscal_period,fiscalPeriod,,,main,1,8,true,true,2026-02-16 12:48:34.1300000,system,2026-02-16 12:48:34.1300000,
+908,50,51,,,1,,fiscalYearStartMonth,fiscal_year_start_month,fiscalYearStartMonth,,,main,1,9,true,true,2026-02-16 12:48:34.1300000,system,2026-02-16 12:48:34.1300000,
+909,50,51,,,1,,monthNumber,calendar_month_number,monthNumber,,,main,1,10,true,true,2026-02-16 12:48:34.1300000,system,2026-02-16 12:48:34.1300000,
+910,50,51,,,1,,month.dbId,calendar_month_dbid,month_dbId,,,main,1,11,true,true,2026-02-16 12:48:34.1300000,system,2026-02-16 12:48:34.1300000,
+911,50,51,,,1,,month.code,calendar_month_code,month_code,,,main,1,12,true,true,2026-02-16 12:48:34.1300000,system,2026-02-16 12:48:34.1300000,
+912,50,51,,,1,,month.name,calendar_month_name,month_name,,,main,1,13,true,true,2026-02-16 12:48:34.1300000,system,2026-02-16 12:48:34.1300000,
+913,50,51,,,1,,period.dbId,period_month_dbid,period_dbId,,,main,1,14,true,true,2026-02-16 12:48:34.1300000,system,2026-02-16 12:48:34.1300000,
+914,50,51,,,1,,period.code,period_month_code,period_code,,,main,1,15,true,true,2026-02-16 12:48:34.1300000,system,2026-02-16 12:48:34.1300000,
+915,50,51,,,1,,period.name,period_month_name,period_name,,,main,1,16,true,true,2026-02-16 12:48:34.1300000,system,2026-02-16 12:48:34.1300000,
+916,50,51,,,1,,_loaded_at,loaded_at,_loaded_at,,,main,1,17,true,true,2026-02-16 12:48:34.1300000,system,2026-02-16 12:48:34.1300000,
+930,,52,,,1,,period_dbid,period_id,"md5(concat_ws(""-"", period_dbid, 'xlg'))",,,main,1,1,true,true,2026-02-16 12:48:41.1033333,system,2026-03-13 14:02:24.6166667,pyspark_to_sql_migration
+931,,52,,,1,,calendar_month_dbid,calendar_month_id,"CASE WHEN calendar_month_dbid IS NULL THEN md5(concat_ws(""-"", '-1', 'xlg')) ELSE md5(concat_ws(""-"", calendar_month_dbid, 'xlg')) END",,,main,1,2,true,true,2026-02-16 12:48:41.1033333,system,2026-03-13 14:02:24.6200000,pyspark_to_sql_migration
+932,,52,,,1,,period_month_dbid,period_month_id,"CASE WHEN period_month_dbid IS NULL THEN md5(concat_ws(""-"", '-1', 'xlg')) ELSE md5(concat_ws(""-"", period_month_dbid, 'xlg')) END",,,main,1,3,true,true,2026-02-16 12:48:41.1033333,system,2026-03-13 14:02:24.6200000,pyspark_to_sql_migration
+933,,52,,,1,,,source_system_id,"md5(concat_ws(""-"", '1', 'xlg'))",,,main,1,4,true,true,2026-02-16 12:48:41.1033333,system,2026-03-13 14:02:24.6266667,pyspark_to_sql_migration
+934,,52,,,1,,,source_system_bk,CAST(1 AS BIGINT),,,main,1,5,true,true,2026-02-16 12:48:41.1033333,system,2026-03-13 14:02:24.6300000,pyspark_to_sql_migration
+935,,52,,,1,,period_dbid,period_bk,period_dbid,,,main,1,6,true,true,2026-02-16 12:48:41.1033333,system,2026-03-13 14:02:24.6300000,pyspark_to_sql_migration
+936,,52,,,1,,calendar_month_dbid,calendar_month_bk,calendar_month_dbid,,,main,1,7,true,true,2026-02-16 12:48:41.1033333,system,2026-03-13 14:02:24.6333333,pyspark_to_sql_migration
+937,,52,,,1,,period_month_dbid,period_month_bk,period_month_dbid,,,main,1,8,true,true,2026-02-16 12:48:41.1033333,system,2026-03-13 14:02:24.6400000,pyspark_to_sql_migration
+938,,52,,,1,,period_code,period_code,period_code,,,main,1,9,true,true,2026-02-16 12:48:41.1033333,system,2026-03-13 14:02:24.6400000,pyspark_to_sql_migration
+939,,52,,,1,,period_description,period_name,period_description,,,main,1,10,true,true,2026-02-16 12:48:41.1033333,system,2026-03-13 14:02:24.6433333,pyspark_to_sql_migration
+940,,52,,,1,,period_code,period_description,"concat_ws("" - "", period_code, period_description)",,,main,1,11,true,true,2026-02-16 12:48:41.1033333,system,2026-03-13 14:02:24.6466667,pyspark_to_sql_migration
+941,,52,,,1,,date_from,date_from,CAST(date_from AS DATE),,,main,1,12,true,true,2026-02-16 12:48:41.1033333,system,2026-03-13 14:02:24.6533333,pyspark_to_sql_migration
+942,,52,,,1,,date_to,date_to,CAST(date_to AS DATE),,,main,1,13,true,true,2026-02-16 12:48:41.1033333,system,2026-03-13 14:02:24.6566667,pyspark_to_sql_migration
+943,,52,,,1,,year,calendar_year,CAST(year AS INT),,,main,1,14,true,true,2026-02-16 12:48:41.1033333,system,2026-03-13 14:02:24.6600000,pyspark_to_sql_migration
+944,,52,,,1,,fiscal_year,fiscal_year,CAST(fiscal_year AS INT),,,main,1,15,true,true,2026-02-16 12:48:41.1033333,system,2026-03-13 14:02:24.6633333,pyspark_to_sql_migration
+945,,52,,,1,,fiscal_period,fiscal_period,CAST(fiscal_period AS INT),,,main,1,16,true,true,2026-02-16 12:48:41.1033333,system,2026-03-13 14:02:24.6700000,pyspark_to_sql_migration
+946,,52,,,1,,fiscal_year_start_month,fiscal_year_start_month,CAST(fiscal_year_start_month AS INT),,,main,1,17,true,true,2026-02-16 12:48:41.1033333,system,2026-03-13 14:02:24.6733333,pyspark_to_sql_migration
+947,,52,,,1,,calendar_month_number,calendar_month_number,CAST(calendar_month_number AS INT),,,main,1,18,true,true,2026-02-16 12:48:41.1033333,system,2026-03-13 14:02:24.6766667,pyspark_to_sql_migration
+948,,52,,,1,,calendar_month_code,calendar_month_code,calendar_month_code,,,main,1,19,true,true,2026-02-16 12:48:41.1033333,system,2026-03-13 14:02:24.6800000,pyspark_to_sql_migration
+949,,52,,,1,,calendar_month_name,calendar_month_name,calendar_month_name,,,main,1,20,true,true,2026-02-16 12:48:41.1033333,system,2026-03-13 14:02:24.6800000,pyspark_to_sql_migration
+950,,52,,,1,,period_month_code,period_month_code,period_month_code,,,main,1,21,true,true,2026-02-16 12:48:41.1033333,system,2026-03-13 14:02:24.6866667,pyspark_to_sql_migration
+951,,52,,,1,,period_month_name,period_month_name,period_month_name,,,main,1,22,true,true,2026-02-16 12:48:41.1033333,system,2026-03-13 14:02:24.6900000,pyspark_to_sql_migration
+952,,52,,,1,,loaded_at,loaded_at_source,loaded_at,,,main,1,23,true,true,2026-02-16 12:48:41.1033333,system,2026-03-13 14:02:24.6900000,pyspark_to_sql_migration
+953,,52,,,1,,,loaded_at,CURRENT_TIMESTAMP,,,main,1,24,true,true,2026-02-16 12:48:41.1033333,system,2026-03-18 14:32:37.1666667,ansi_sql_migration
+954,,52,,,1,,,is_deleted_flag,CAST(0 AS TINYINT),,,main,1,25,true,true,2026-02-16 12:48:41.1033333,system,2026-03-13 14:02:24.6933333,pyspark_to_sql_migration
+955,49,34,,,,,,row_key,monotonically_increasing_id(),,,,,1,,false,2026-03-04 08:43:53.8533333,system,2026-03-04 08:43:53.8533333,system
+956,,38,,,1,,account_dbid,account_dbid,account_dbid,,,main,,1,,true,,,,
+957,,38,,,1,,code,code,code,,,main,,2,,true,,,,
+958,,38,,,1,,description,description,description,,,main,,3,,true,,,,
+959,,38,,,1,,short_description,short_description,short_description,,,main,,4,,true,,,,
+960,,38,,,1,,account_group_dbid,account_group_dbid,account_group_dbid,,,main,,5,,true,,,,
+961,,38,,,1,,account_type_dbid,account_type_dbid,account_type_dbid,,,main,,6,,true,,,,
+962,,38,,,1,,account_category_dbid,account_category_dbid,account_category_dbid,,,main,,7,,true,,,,
+963,,38,,,1,,ledger_type_dbid,ledger_type_dbid,ledger_type_dbid,,,main,,8,,true,,,,
+964,,38,,,1,,owner_dbid,owner_dbid,owner_dbid,,,main,,9,,true,,,,
+965,,38,,,1,,is_active,is_active,is_active,,,main,,10,,true,,,,
+966,,38,,,1,,modified_at,modified_at,modified_at,,,main,,11,,true,,,,
+967,,38,,,1,,loaded_at,loaded_at,loaded_at,,,main,,12,,true,,,,
+968,38,41,,,1,,account_dbid,account_dbid,account_dbid,,,main,,1,,true,,,,
+969,38,41,,,1,,code,code,code,,,main,,2,,true,,,,
+970,38,41,,,1,,description,description,description,,,main,,3,,true,,,,
+971,38,41,,,1,,short_description,short_description,short_description,,,main,,4,,true,,,,
+972,38,41,,,1,,account_group_dbid,account_group_dbid,account_group_dbid,,,main,,5,,true,,,,
+973,38,41,,,1,,account_type_dbid,account_type_dbid,account_type_dbid,,,main,,6,,true,,,,
+974,38,41,,,1,,account_category_dbid,account_category_dbid,account_category_dbid,,,main,,7,,true,,,,
+975,38,41,,,1,,ledger_type_dbid,ledger_type_dbid,ledger_type_dbid,,,main,,8,,true,,,,
+976,38,41,,,1,,owner_dbid,owner_dbid,owner_dbid,,,main,,9,,true,,,,
+977,38,41,,,1,,is_active,is_active,is_active,,,main,,10,,true,,,,
+978,38,41,,,1,,modified_at,modified_at,modified_at,,,main,,11,,true,,,,
+979,38,41,,,1,,loaded_at,loaded_at,loaded_at,,,main,,12,,true,,,,
+982,38,44,,,2,,account_type_dbid,account_type_id,"CASE WHEN account_type_dbid IS NULL THEN MD5(CONCAT_WS('-', '-1', 'xlg')) ELSE MD5(CONCAT_WS('-', account_type_dbid, 'xlg')) END",,,main,,3,,true,,,,
+983,38,44,,,2,,account_category_dbid,account_category_id,"CASE WHEN account_category_dbid IS NULL THEN MD5(CONCAT_WS('-', '-1', 'xlg')) ELSE MD5(CONCAT_WS('-', account_category_dbid, 'xlg')) END",,,main,,4,,true,,,,
+989,38,44,,,1,,short_description,account_name_short,short_description,,,main,,10,,true,,,,
+991,38,44,,,2,,is_active,is_active,CASE WHEN is_active = 1 THEN 1 ELSE 0 END,,,main,,12,,true,,,,
+998,44,47,,,2,,account_name_short,account_name_short,account.account_name_short,,,gold,,4,,true,,,,
+1000,44,47,,,2,,account_type_id,account_type_id,account.account_type_id,,,gold,,6,,true,,,,
+1001,44,47,,,2,,account_category_id,account_category_id,account.account_category_id,,,gold,,7,,true,,,,
+1004,44,47,,,2,,is_active,is_active,account.is_active,,,gold,,10,,true,,,,
+1005,44,47,,,2,,source_system_id,source_system_id,account.source_system_id,,,gold,,11,,true,,,,
+1006,67,38,,,1,,dbid,account_dbid,dbid,,,main,,1,,false,2026-04-07 10:12:52.5700000,source_mapping_setup,2026-04-07 10:41:45.4100000,source_mapping_v2
+1007,67,38,,,1,,Code,code,Code,,,main,,2,,false,2026-04-07 10:12:52.5700000,source_mapping_setup,2026-04-07 10:41:45.4100000,source_mapping_v2
+1008,67,38,,,1,,Description,description,Description,,,main,,3,,false,2026-04-07 10:12:52.5700000,source_mapping_setup,2026-04-07 10:41:45.4100000,source_mapping_v2
+1009,67,38,,,1,,ShortDescription,short_description,ShortDescription,,,main,,4,,false,2026-04-07 10:12:52.5700000,source_mapping_setup,2026-04-07 10:41:45.4100000,source_mapping_v2
+1010,67,38,,,1,,AccountType.dbid,account_type_dbid,AccountType.dbid,,,main,,5,,false,2026-04-07 10:12:52.5700000,source_mapping_setup,2026-04-07 10:41:45.4100000,source_mapping_v2
+1011,67,38,,,1,,AccountCategory.dbid,account_category_dbid,AccountCategory.dbid,,,main,,6,,false,2026-04-07 10:12:52.5700000,source_mapping_setup,2026-04-07 10:41:45.4100000,source_mapping_v2
+1012,67,38,,,1,,AccountGroup.dbid,account_group_dbid,AccountGroup.dbid,,,main,,7,,false,2026-04-07 10:12:52.5700000,source_mapping_setup,2026-04-07 10:41:45.4100000,source_mapping_v2
+1013,68,40,,,1,,dbid,transaction_dbid,dbid,,,main,,1,,false,2026-04-07 10:12:52.6433333,source_mapping_setup,2026-04-07 10:41:45.4100000,source_mapping_v2
+1014,68,40,,,1,,TransactionDate,transaction_date,TransactionDate,,,main,,2,,false,2026-04-07 10:12:52.6433333,source_mapping_setup,2026-04-07 10:41:45.4100000,source_mapping_v2
+1015,68,40,,,1,,Description,description,Description,,,main,,3,,false,2026-04-07 10:12:52.6433333,source_mapping_setup,2026-04-07 10:41:45.4100000,source_mapping_v2
+1016,68,40,,,1,,Amount,amount,Amount,,,main,,4,,false,2026-04-07 10:12:52.6433333,source_mapping_setup,2026-04-07 10:41:45.4100000,source_mapping_v2
+1017,68,40,,,1,,CurrencyCode,currency_code,CurrencyCode,,,main,,5,,false,2026-04-07 10:12:52.6433333,source_mapping_setup,2026-04-07 10:41:45.4100000,source_mapping_v2
+1018,68,40,,,1,,Account.dbid,account_dbid,Account.dbid,,,main,,6,,false,2026-04-07 10:12:52.6433333,source_mapping_setup,2026-04-07 10:41:45.4100000,source_mapping_v2
+1019,68,40,,,1,,Period.dbid,period_dbid,Period.dbid,,,main,,7,,false,2026-04-07 10:12:52.6433333,source_mapping_setup,2026-04-07 10:41:45.4100000,source_mapping_v2
+1020,68,40,,,1,,LedgerType.dbid,ledger_type_dbid,LedgerType.dbid,,,main,,8,,false,2026-04-07 10:12:52.6433333,source_mapping_setup,2026-04-07 10:41:45.4100000,source_mapping_v2
+1021,68,40,,,1,,CostCentre.dbid,cost_centre_dbid,CostCentre.dbid,,,main,,9,,false,2026-04-07 10:12:52.6433333,source_mapping_setup,2026-04-07 10:41:45.4100000,source_mapping_v2
+1022,68,40,,,1,,Project.dbid,project_dbid,Project.dbid,,,main,,10,,false,2026-04-07 10:12:52.6433333,source_mapping_setup,2026-04-07 10:41:45.4100000,source_mapping_v2
+1023,68,40,,,1,,BankAccount.dbid,bank_account_dbid,BankAccount.dbid,,,main,,11,,false,2026-04-07 10:12:52.6433333,source_mapping_setup,2026-04-07 10:41:45.4100000,source_mapping_v2
+1024,68,40,,,1,,AccountIndicator.dbid,account_indicator_dbid,AccountIndicator.dbid,,,main,,12,,false,2026-04-07 10:12:52.6433333,source_mapping_setup,2026-04-07 10:41:45.4100000,source_mapping_v2
+1025,68,40,,,1,,Owner.dbid,owner_dbid,Owner.dbid,,,main,,13,,false,2026-04-07 10:12:52.6433333,source_mapping_setup,2026-04-07 10:41:45.4100000,source_mapping_v2
+1026,68,40,,,1,,IsReversed,is_reversed,IsReversed,,,main,,14,,false,2026-04-07 10:12:52.6433333,source_mapping_setup,2026-04-07 10:41:45.4100000,source_mapping_v2
+1027,68,40,,,1,,CreatedAt,created_at,CreatedAt,,,main,,15,,false,2026-04-07 10:12:52.6433333,source_mapping_setup,2026-04-07 10:41:45.4100000,source_mapping_v2
+1028,69,50,,,1,,period_dbid,period_dbid,period_dbid,,,main,,1,,false,2026-04-07 10:22:58.0066667,passthrough_fix,2026-04-07 10:41:45.3500000,source_mapping_v2
+1029,69,50,,,1,,period_code,period_code,period_code,,,main,,2,,false,2026-04-07 10:22:58.0300000,passthrough_fix,2026-04-07 10:41:45.3500000,source_mapping_v2
+1030,69,50,,,1,,period_description,period_description,period_description,,,main,,3,,false,2026-04-07 10:22:58.0366667,passthrough_fix,2026-04-07 10:41:45.3500000,source_mapping_v2
+1031,69,50,,,1,,date_from,date_from,date_from,,,main,,4,,false,2026-04-07 10:22:58.0400000,passthrough_fix,2026-04-07 10:41:45.3500000,source_mapping_v2
+1032,69,50,,,1,,date_to,date_to,date_to,,,main,,5,,false,2026-04-07 10:22:58.0400000,passthrough_fix,2026-04-07 10:41:45.3500000,source_mapping_v2
+1033,69,50,,,1,,year,year,year,,,main,,6,,false,2026-04-07 10:22:58.0466667,passthrough_fix,2026-04-07 10:41:45.3500000,source_mapping_v2
+1034,69,50,,,1,,fiscal_year,fiscal_year,fiscal_year,,,main,,7,,false,2026-04-07 10:22:58.0500000,passthrough_fix,2026-04-07 10:41:45.3500000,source_mapping_v2
+1035,69,50,,,1,,fiscal_period,fiscal_period,fiscal_period,,,main,,8,,false,2026-04-07 10:22:58.0533333,passthrough_fix,2026-04-07 10:41:45.3500000,source_mapping_v2
+1036,69,50,,,1,,fiscal_year_start_month,fiscal_year_start_month,fiscal_year_start_month,,,main,,9,,false,2026-04-07 10:22:58.0566667,passthrough_fix,2026-04-07 10:41:45.3500000,source_mapping_v2
+1037,69,50,,,1,,calendar_month_number,calendar_month_number,calendar_month_number,,,main,,10,,false,2026-04-07 10:22:58.0600000,passthrough_fix,2026-04-07 10:41:45.3500000,source_mapping_v2
+1038,69,50,,,1,,calendar_month_dbid,calendar_month_dbid,calendar_month_dbid,,,main,,11,,false,2026-04-07 10:22:58.0633333,passthrough_fix,2026-04-07 10:41:45.3500000,source_mapping_v2
+1039,69,50,,,1,,calendar_month_code,calendar_month_code,calendar_month_code,,,main,,12,,false,2026-04-07 10:22:58.0666667,passthrough_fix,2026-04-07 10:41:45.3500000,source_mapping_v2
+1040,69,50,,,1,,calendar_month_name,calendar_month_name,calendar_month_name,,,main,,13,,false,2026-04-07 10:22:58.0700000,passthrough_fix,2026-04-07 10:41:45.3500000,source_mapping_v2
+1041,69,50,,,1,,period_month_dbid,period_month_dbid,period_month_dbid,,,main,,14,,false,2026-04-07 10:22:58.0733333,passthrough_fix,2026-04-07 10:41:45.3500000,source_mapping_v2
+1042,69,50,,,1,,period_month_code,period_month_code,period_month_code,,,main,,15,,false,2026-04-07 10:22:58.0800000,passthrough_fix,2026-04-07 10:41:45.3500000,source_mapping_v2
+1043,69,50,,,1,,period_month_name,period_month_name,period_month_name,,,main,,16,,false,2026-04-07 10:22:58.0866667,passthrough_fix,2026-04-07 10:41:45.3500000,source_mapping_v2
+1044,69,50,,,1,,loaded_at,loaded_at,loaded_at,,,main,,17,,false,2026-04-07 10:22:58.0900000,passthrough_fix,2026-04-07 10:41:45.3500000,source_mapping_v2
+1045,40,43,,,1,,transaction_dbid,transaction_dbid,transaction_dbid,,,main,,1,,true,2026-04-07 10:23:10.1733333,passthrough_fix,,
+1046,40,43,,,1,,transaction_date,transaction_date,transaction_date,,,main,,2,,true,2026-04-07 10:23:10.1766667,passthrough_fix,,
+1047,40,43,,,1,,description,description,description,,,main,,3,,true,2026-04-07 10:23:10.1800000,passthrough_fix,,
+1048,40,43,,,1,,amount,amount,amount,,,main,,4,,true,2026-04-07 10:23:10.1866667,passthrough_fix,,
+1049,40,43,,,1,,currency_code,currency_code,currency_code,,,main,,5,,true,2026-04-07 10:23:10.1900000,passthrough_fix,,
+1050,40,43,,,1,,account_dbid,account_dbid,account_dbid,,,main,,6,,true,2026-04-07 10:23:10.1933333,passthrough_fix,,
+1051,40,43,,,1,,period_dbid,period_dbid,period_dbid,,,main,,7,,true,2026-04-07 10:23:10.1966667,passthrough_fix,,
+1052,40,43,,,1,,ledger_type_dbid,ledger_type_dbid,ledger_type_dbid,,,main,,8,,true,2026-04-07 10:23:10.2000000,passthrough_fix,,
+1053,40,43,,,1,,cost_centre_dbid,cost_centre_dbid,cost_centre_dbid,,,main,,9,,true,2026-04-07 10:23:10.2033333,passthrough_fix,,
+1054,40,43,,,1,,project_dbid,project_dbid,project_dbid,,,main,,10,,true,2026-04-07 10:23:10.2066667,passthrough_fix,,
+1055,40,43,,,1,,bank_account_dbid,bank_account_dbid,bank_account_dbid,,,main,,11,,true,2026-04-07 10:23:10.2133333,passthrough_fix,,
+1056,40,43,,,1,,account_indicator_dbid,account_indicator_dbid,account_indicator_dbid,,,main,,12,,true,2026-04-07 10:23:10.2166667,passthrough_fix,,
+1057,40,43,,,1,,owner_dbid,owner_dbid,owner_dbid,,,main,,13,,true,2026-04-07 10:23:10.2200000,passthrough_fix,,
+1058,40,43,,,1,,is_reversed,is_reversed,is_reversed,,,main,,14,,true,2026-04-07 10:23:10.2233333,passthrough_fix,,
+1059,40,43,,,1,,created_at,created_at,created_at,,,main,,15,,true,2026-04-07 10:23:10.2266667,passthrough_fix,,
+1060,67,38,,,1,,dbId,account_dbid,dbId,,,main,,1,,true,2026-04-07 10:42:13.2400000,source_mapping_v2,,
+1061,67,38,,,1,,code,code,code,,,main,,2,,true,2026-04-07 10:42:13.2400000,source_mapping_v2,,
+1062,67,38,,,1,,description,description,description,,,main,,3,,true,2026-04-07 10:42:13.2400000,source_mapping_v2,,
+1063,67,38,,,1,,shortDescription,short_description,shortDescription,,,main,,4,,true,2026-04-07 10:42:13.2400000,source_mapping_v2,,
+1064,67,38,,,1,,accountType.dbId,account_type_dbid,accountType.dbId,,,main,,5,,true,2026-04-07 10:42:13.2400000,source_mapping_v2,,
+1065,67,38,,,1,,accountCategory.dbId,account_category_dbid,accountCategory.dbId,,,main,,6,,true,2026-04-07 10:42:13.2400000,source_mapping_v2,,
+1066,67,38,,,1,,accountGroup.dbId,account_group_dbid,accountGroup.dbId,,,main,,7,,true,2026-04-07 10:42:13.2400000,source_mapping_v2,,
+1067,67,38,,,1,,descriptionTranslated,description_translated,descriptionTranslated,,,main,,8,,true,2026-04-07 10:42:13.2400000,source_mapping_v2,,
+1068,67,38,,,1,,sysAccount.dbId,sys_account_dbid,sysAccount.dbId,,,main,,9,,true,2026-04-07 10:42:13.2400000,source_mapping_v2,,
+1069,67,38,,,1,,accountIndicator.dbId,account_indicator_dbid,accountIndicator.dbId,,,main,,10,,true,2026-04-07 10:42:13.2400000,source_mapping_v2,,
+1070,67,38,,,1,,chartOfAccountDbId,chart_of_account_dbid,chartOfAccountDbId,,,main,,11,,true,2026-04-07 10:42:13.2400000,source_mapping_v2,,
+1071,67,38,,,1,,ownerDbId,owner_dbid,ownerDbId,,,main,,12,,true,2026-04-07 10:42:13.2400000,source_mapping_v2,,
+1072,68,40,,,1,,dbId,transaction_dbid,dbId,,,main,,1,,true,2026-04-07 10:42:13.3000000,source_mapping_v2,,
+1073,68,40,,,1,,postedDate,transaction_date,postedDate,,,main,,2,,true,2026-04-07 10:42:13.3000000,source_mapping_v2,,
+1074,68,40,,,1,,text,description,text,,,main,,3,,true,2026-04-07 10:42:13.3000000,source_mapping_v2,,
+1075,68,40,,,1,,amount,amount,amount,,,main,,4,,true,2026-04-07 10:42:13.3000000,source_mapping_v2,,
+1076,68,40,,,1,,accountDbId,account_dbid,accountDbId,,,main,,5,,true,2026-04-07 10:42:13.3000000,source_mapping_v2,,
+1077,68,40,,,1,,periodId,period_dbid,periodId,,,main,,6,,true,2026-04-07 10:42:13.3000000,source_mapping_v2,,
+1078,68,40,,,1,,ledgerType.dbId,ledger_type_dbid,ledgerType.dbId,,,main,,7,,true,2026-04-07 10:42:13.3000000,source_mapping_v2,,
+1079,68,40,,,1,,glObject1DbId,cost_centre_dbid,glObject1DbId,,,main,,8,,true,2026-04-07 10:42:13.3000000,source_mapping_v2,,
+1080,68,40,,,1,,glObject2DbId,project_dbid,glObject2DbId,,,main,,9,,true,2026-04-07 10:42:13.3000000,source_mapping_v2,,
+1081,68,40,,,1,,bankAccount.dbId,bank_account_dbid,bankAccount.dbId,,,main,,10,,true,2026-04-07 10:42:13.3000000,source_mapping_v2,,
+1082,68,40,,,1,,accountIndicatorDbId,account_indicator_dbid,accountIndicatorDbId,,,main,,11,,true,2026-04-07 10:42:13.3000000,source_mapping_v2,,
+1083,68,40,,,1,,ownerDbId,owner_dbid,ownerDbId,,,main,,12,,true,2026-04-07 10:42:13.3000000,source_mapping_v2,,
+1084,68,40,,,1,,fiscalYear,fiscal_year,fiscalYear,,,main,,13,,true,2026-04-07 10:42:13.3000000,source_mapping_v2,,
+1085,68,40,,,1,,periodNumber,period_number,periodNumber,,,main,,14,,true,2026-04-07 10:42:13.3000000,source_mapping_v2,,
+1086,68,40,,,1,,transactionNumber,transaction_number,transactionNumber,,,main,,15,,true,2026-04-07 10:42:13.3000000,source_mapping_v2,,
+1087,69,50,,,1,,dbId,period_dbid,dbId,,,main,,1,,true,2026-04-07 10:42:13.4066667,source_mapping_v2,,
+1088,69,50,,,1,,code,code,code,,,main,,2,,true,2026-04-07 10:42:13.4066667,source_mapping_v2,,
+1089,69,50,,,1,,description,description,description,,,main,,3,,true,2026-04-07 10:42:13.4066667,source_mapping_v2,,
+1090,69,50,,,1,,fromDate,from_date,fromDate,,,main,,4,,true,2026-04-07 10:42:13.4066667,source_mapping_v2,,
+1091,69,50,,,1,,toDate,to_date,toDate,,,main,,5,,true,2026-04-07 10:42:13.4066667,source_mapping_v2,,
+1092,69,50,,,1,,year,year,year,,,main,,6,,true,2026-04-07 10:42:13.4066667,source_mapping_v2,,
+1093,69,50,,,1,,fiscalYear,fiscal_year,fiscalYear,,,main,,7,,true,2026-04-07 10:42:13.4066667,source_mapping_v2,,
+1094,69,50,,,1,,fiscalPeriod,fiscal_period,fiscalPeriod,,,main,,8,,true,2026-04-07 10:42:13.4066667,source_mapping_v2,,
+1095,69,50,,,1,,monthNumber,month_number,monthNumber,,,main,,9,,true,2026-04-07 10:42:13.4066667,source_mapping_v2,,
+1096,70,60,,,1,,dbId,object_value_dbid,dbId,,,main,,1,,true,2026-04-07 10:42:13.4466667,source_mapping_v2,,
+1097,70,60,,,1,,code,object_value_code,code,,,main,,2,,true,2026-04-07 10:42:13.4466667,source_mapping_v2,,
+1098,70,60,,,1,,description,object_value_description,description,,,main,,3,,true,2026-04-07 10:42:13.4466667,source_mapping_v2,,
+1099,70,60,,,1,,objectKindDbId,object_kind_dbid,objectKindDbId,,,main,,4,,true,2026-04-07 10:42:13.4466667,source_mapping_v2,,
+1100,70,60,,,1,,ownerDbId,owner_dbid,ownerDbId,,,main,,5,,true,2026-04-07 10:42:13.4466667,source_mapping_v2,,
+1101,71,72,,,1,,PersonID,person_id,PersonID,,,main,,1,,true,2026-04-17 13:21:44.6166667,api_registrar,,
+1102,71,72,,,1,,SkillName,skill_name,SkillName,,,main,,2,,true,2026-04-17 13:21:44.6200000,api_registrar,,
+1103,71,72,,,1,,SkillSet,skill_set,SkillSet,,,main,,3,,true,2026-04-17 13:21:44.6233333,api_registrar,,
+1104,71,72,,,1,,SkillStartDate,skill_start_date,SkillStartDate,,,main,,4,,true,2026-04-17 13:21:44.6266667,api_registrar,,
+1105,71,72,,,1,,SkillExpiryDate,skill_expiry_date,SkillExpiryDate,,,main,,5,,true,2026-04-17 13:21:44.6300000,api_registrar,,
+1106,71,72,,,1,,SkillReviewDate,skill_review_date,SkillReviewDate,,,main,,6,,true,2026-04-17 13:21:44.6300000,api_registrar,,
+1107,71,72,,,1,,SkillScore,skill_score,SkillScore,,,main,,7,,true,2026-04-17 13:21:44.6333333,api_registrar,,
+1108,71,72,,,1,,SkillScoreEffDate,skill_score_eff_date,SkillScoreEffDate,,,main,,8,,true,2026-04-17 13:21:44.6366667,api_registrar,,
+1109,71,72,,,1,,SkillAuthStatus,skill_auth_status,SkillAuthStatus,,,main,,9,,true,2026-04-17 13:21:44.6400000,api_registrar,,
+1110,71,72,,,1,,SubjectName,subject_name,SubjectName,,,main,,10,,true,2026-04-17 13:21:44.6433333,api_registrar,,
+1111,71,72,,,1,,TypeName,type_name,TypeName,,,main,,11,,true,2026-04-17 13:21:44.6466667,api_registrar,,
+1112,71,72,,,1,,Level,level,Level,,,main,,12,,true,2026-04-17 13:21:44.6500000,api_registrar,,
+1113,71,72,,,1,,Grade,grade,Grade,,,main,,13,,true,2026-04-17 13:21:44.6533333,api_registrar,,
+1114,71,72,,,1,,InstitutionType,institution_type,InstitutionType,,,main,,14,,true,2026-04-17 13:21:44.6600000,api_registrar,,
+1115,71,72,,,1,,PlaceOfLearning,place_of_learning,PlaceOfLearning,,,main,,15,,true,2026-04-17 13:21:44.6600000,api_registrar,,
+1116,71,72,,,1,,StudyCommenceDate,study_commence_date,StudyCommenceDate,,,main,,16,,true,2026-04-17 13:21:44.6633333,api_registrar,,
+1117,71,72,,,1,,StudyExpectedDate,study_expected_date,StudyExpectedDate,,,main,,17,,true,2026-04-17 13:21:44.6700000,api_registrar,,
+1118,71,72,,,1,,DateObtained,date_obtained,DateObtained,,,main,,18,,true,2026-04-17 13:21:44.6700000,api_registrar,,
+1119,71,72,,,1,,ValidUntil,valid_until,ValidUntil,,,main,,19,,true,2026-04-17 13:21:44.6733333,api_registrar,,
+1120,71,72,,,1,,QualAuthStatus,qual_auth_status,QualAuthStatus,,,main,,20,,true,2026-04-17 13:21:44.6800000,api_registrar,,

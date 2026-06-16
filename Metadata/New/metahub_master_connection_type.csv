@@ -1,0 +1,7 @@
+connection_type_id,type_code,type_name,description,default_port,jdbc_driver_class,is_active,created_at,created_by,updated_at,updated_by
+1,graphql,GraphQL API,"GraphQL endpoint with paginated queries, cursor-based navigation, and query templates.",,,true,2026-04-17 08:16:55.2100000,seed,2026-04-17 08:16:55.2100000,seed
+2,link_table,Link Table API,"Simple HTTP GET to a URL, returns JSON. Full refresh, no pagination. Used by iTrent-style APIs.",,,true,2026-04-17 08:16:55.3033333,seed,2026-04-17 08:16:55.3033333,seed
+3,rest_api,REST API,Standard REST API with offset/page-based or cursor pagination. Supports GET and POST.,,,true,2026-04-17 08:16:55.3533333,seed,2026-04-17 08:16:55.3533333,seed
+4,file_export,File Export,"CSV, Excel, or Parquet files dropped to Azure Blob Storage or ADLS. ADF copies files to landing.",,,true,2026-04-17 08:16:55.4033333,seed,2026-04-17 08:16:55.4033333,seed
+5,jdbc,JDBC Database,"Direct database connection via JDBC. Used for SQL Server, PostgreSQL, Oracle source reads.",,,true,2026-04-17 08:16:55.4700000,seed,2026-04-17 08:16:55.4700000,seed
+6,odata,OData API,"OData-compliant API with $filter, $select, $expand. Used by Dynamics 365, SAP, SharePoint.",,,true,2026-04-17 08:16:55.5333333,seed,2026-04-17 08:16:55.5333333,seed

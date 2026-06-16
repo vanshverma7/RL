@@ -1,0 +1,213 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.canvas{position:relative;width:100%;min-height:700px;overflow:auto;background:var(--color-background-tertiary);border:1px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg)}
+.table-card{position:absolute;background:var(--color-background-primary);border:1px solid var(--color-border-secondary);border-radius:6px;min-width:220px;user-select:none;cursor:move;box-shadow:0 1px 4px rgba(0,0,0,0.08)}
+.table-header{background:#185FA5;color:#fff;padding:5px 10px;font-size:12px;font-weight:500;border-radius:5px 5px 0 0;display:flex;align-items:center;gap:6px;cursor:move}
+.table-icon{width:14px;height:14px;flex-shrink:0;opacity:.85}
+.col-row{display:flex;align-items:center;gap:6px;padding:3px 8px;font-size:11px;color:var(--color-text-primary);border-bottom:1px solid var(--color-border-tertiary)}
+.col-row:last-child{border-bottom:none}
+.col-row:hover{background:var(--color-background-secondary)}
+.col-row.hl{background:rgba(24,95,165,0.08)}
+.key-icon{width:12px;height:12px;flex-shrink:0}
+.col-name{flex:1;font-family:var(--font-mono);font-size:11px}
+.col-type{color:var(--color-text-secondary);font-size:10px;white-space:nowrap}
+.pk{color:#B87333}
+.fk{color:#185FA5}
+svg.lines{position:absolute;top:0;left:0;pointer-events:none;overflow:visible}
+</style>
+
+<div class="canvas" id="canvas">
+<svg class="lines" id="lines"></svg>
+
+<div class="table-card" id="t-system" style="left:30px;top:40px">
+  <div class="table-header">
+    <svg class="table-icon" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="12" height="12" rx="1.5" stroke="white" stroke-width="1"/><line x1="1" y1="4.5" x2="13" y2="4.5" stroke="white" stroke-width="1"/><line x1="4.5" y1="4.5" x2="4.5" y2="13" stroke="white" stroke-width="1"/></svg>
+    ETL_Config_System
+  </div>
+  <div class="col-row">
+    <svg class="key-icon pk" viewBox="0 0 12 12"><circle cx="4.5" cy="6" r="3" stroke="currentColor" stroke-width="1.2" fill="none"/><line x1="7" y1="6" x2="11" y2="6" stroke="currentColor" stroke-width="1.2"/><line x1="9" y1="6" x2="9" y2="8" stroke="currentColor" stroke-width="1.2"/><line x1="11" y1="6" x2="11" y2="8" stroke="currentColor" stroke-width="1.2"/></svg>
+    <span class="col-name pk">ConfigSystemID</span><span class="col-type">int</span>
+  </div>
+  <div class="col-row">
+    <svg class="key-icon pk" viewBox="0 0 12 12"><circle cx="4.5" cy="6" r="3" stroke="currentColor" stroke-width="1.2" fill="none"/><line x1="7" y1="6" x2="11" y2="6" stroke="currentColor" stroke-width="1.2"/><line x1="9" y1="6" x2="9" y2="8" stroke="currentColor" stroke-width="1.2"/><line x1="11" y1="6" x2="11" y2="8" stroke="currentColor" stroke-width="1.2"/></svg>
+    <span class="col-name pk">System</span><span class="col-type">varchar</span>
+  </div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">SystemType</span><span class="col-type">varchar</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">SystemCode</span><span class="col-type">varchar</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">Server</span><span class="col-type">varchar</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">Database</span><span class="col-type">varchar</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">URL</span><span class="col-type">varchar</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">StorageAccount</span><span class="col-type">varchar</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">Container</span><span class="col-type">varchar</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">KeyVaultSecret1</span><span class="col-type">varchar</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">KeyVaultSecret2</span><span class="col-type">varchar</span></div>
+</div>
+
+<div class="table-card" id="t-staging" style="left:340px;top:40px">
+  <div class="table-header">
+    <svg class="table-icon" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="12" height="12" rx="1.5" stroke="white" stroke-width="1"/><line x1="1" y1="4.5" x2="13" y2="4.5" stroke="white" stroke-width="1"/><line x1="4.5" y1="4.5" x2="4.5" y2="13" stroke="white" stroke-width="1"/></svg>
+    ETL_Config_Staging
+  </div>
+  <div class="col-row">
+    <svg class="key-icon pk" viewBox="0 0 12 12"><circle cx="4.5" cy="6" r="3" stroke="currentColor" stroke-width="1.2" fill="none"/><line x1="7" y1="6" x2="11" y2="6" stroke="currentColor" stroke-width="1.2"/><line x1="9" y1="6" x2="9" y2="8" stroke="currentColor" stroke-width="1.2"/><line x1="11" y1="6" x2="11" y2="8" stroke="currentColor" stroke-width="1.2"/></svg>
+    <span class="col-name pk">ConfigStagingID</span><span class="col-type">int</span>
+  </div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">BatchName</span><span class="col-type">varchar</span></div>
+  <div class="col-row hl">
+    <svg class="key-icon fk" viewBox="0 0 12 12"><circle cx="4.5" cy="6" r="3" stroke="currentColor" stroke-width="1.2" fill="none"/><line x1="7" y1="6" x2="11" y2="6" stroke="currentColor" stroke-width="1.2"/></svg>
+    <span class="col-name fk">SourceSystem</span><span class="col-type">varchar</span>
+  </div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">TargetSystem</span><span class="col-type">varchar</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">SourceTableName</span><span class="col-type">varchar</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">SourceQueryTemplateID</span><span class="col-type">int</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">SourceQueryPageSize</span><span class="col-type">int</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">SourceFileName</span><span class="col-type">varchar</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">SourceSheetName</span><span class="col-type">varchar</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">TargetTableSchema</span><span class="col-type">varchar</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">TargetTableName</span><span class="col-type">varchar</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">TargetTableFormat</span><span class="col-type">varchar</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">JsonEntityReference</span><span class="col-type">varchar</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">BusinessKey</span><span class="col-type">varchar</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">Enabled</span><span class="col-type">char(1)</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">LoadType</span><span class="col-type">char(1)</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">InitialLoad</span><span class="col-type">char(1)</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">IncrementalColumn</span><span class="col-type">varchar</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">Token</span><span class="col-type">varchar</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">LoadStart</span><span class="col-type">datetime</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">LoadEnd</span><span class="col-type">datetime</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">LastRunStatus</span><span class="col-type">varchar</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">TruncateBeforeLoad</span><span class="col-type">char(1)</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">PathType</span><span class="col-type">varchar</span></div>
+</div>
+
+<div class="table-card" id="t-column" style="left:680px;top:40px">
+  <div class="table-header">
+    <svg class="table-icon" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="12" height="12" rx="1.5" stroke="white" stroke-width="1"/><line x1="1" y1="4.5" x2="13" y2="4.5" stroke="white" stroke-width="1"/><line x1="4.5" y1="4.5" x2="4.5" y2="13" stroke="white" stroke-width="1"/></svg>
+    ETL_Config_StagingColumn
+  </div>
+  <div class="col-row">
+    <svg class="key-icon pk" viewBox="0 0 12 12"><circle cx="4.5" cy="6" r="3" stroke="currentColor" stroke-width="1.2" fill="none"/><line x1="7" y1="6" x2="11" y2="6" stroke="currentColor" stroke-width="1.2"/><line x1="9" y1="6" x2="9" y2="8" stroke="currentColor" stroke-width="1.2"/><line x1="11" y1="6" x2="11" y2="8" stroke="currentColor" stroke-width="1.2"/></svg>
+    <span class="col-name pk">ConfigStagingColumnID</span><span class="col-type">int</span>
+  </div>
+  <div class="col-row hl">
+    <svg class="key-icon fk" viewBox="0 0 12 12"><circle cx="4.5" cy="6" r="3" stroke="currentColor" stroke-width="1.2" fill="none"/><line x1="7" y1="6" x2="11" y2="6" stroke="currentColor" stroke-width="1.2"/></svg>
+    <span class="col-name fk">ConfigStagingID</span><span class="col-type">int</span>
+  </div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">SourceSystem</span><span class="col-type">varchar</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">SourceTableName</span><span class="col-type">varchar</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">OrdinalPosition</span><span class="col-type">int</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">SourceColumn</span><span class="col-type">varchar</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">TargetColumn</span><span class="col-type">varchar</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">TargetDataType</span><span class="col-type">varchar</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">Precision</span><span class="col-type">int</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">Scale</span><span class="col-type">int</span></div>
+  <div class="col-row"><div style="width:12px"></div><span class="col-name">TargetDataFormat</span><span class="col-type">varchar</span></div>
+</div>
+</div>
+
+<div style="display:flex;gap:16px;align-items:center;padding:8px 4px;font-size:11px;color:var(--color-text-secondary)">
+  <span style="display:flex;align-items:center;gap:4px">
+    <svg width="12" height="12" viewBox="0 0 12 12"><circle cx="4.5" cy="6" r="3" stroke="#B87333" stroke-width="1.2" fill="none"/><line x1="7" y1="6" x2="11" y2="6" stroke="#B87333" stroke-width="1.2"/><line x1="9" y1="6" x2="9" y2="8" stroke="#B87333" stroke-width="1.2"/><line x1="11" y1="6" x2="11" y2="8" stroke="#B87333" stroke-width="1.2"/></svg>
+    Primary key
+  </span>
+  <span style="display:flex;align-items:center;gap:4px">
+    <svg width="12" height="12" viewBox="0 0 12 12"><circle cx="4.5" cy="6" r="3" stroke="#185FA5" stroke-width="1.2" fill="none"/><line x1="7" y1="6" x2="11" y2="6" stroke="#185FA5" stroke-width="1.2"/></svg>
+    Foreign key
+  </span>
+  <span style="margin-left:auto;font-style:italic">Drag tables to reposition</span>
+</div>
+
+<script>
+function getRect(el) {
+  const canvas = document.getElementById('canvas');
+  const cr = canvas.getBoundingClientRect();
+  const er = el.getBoundingClientRect();
+  return {
+    x: er.left - cr.left + canvas.scrollLeft,
+    y: er.top - cr.top + canvas.scrollTop,
+    w: er.width,
+    h: er.height
+  };
+}
+
+function rowMidY(card, rowIndex) {
+  const rows = card.querySelectorAll('.col-row');
+  const canvas = document.getElementById('canvas');
+  const cr = canvas.getBoundingClientRect();
+  if (rows[rowIndex]) {
+    const r = rows[rowIndex].getBoundingClientRect();
+    return r.top - cr.top + canvas.scrollTop + r.height / 2;
+  }
+  return getRect(card).y + 28 + rowIndex * 22;
+}
+
+function drawLines() {
+  const svg = document.getElementById('lines');
+  const canvas = document.getElementById('canvas');
+  svg.style.width = canvas.scrollWidth + 'px';
+  svg.style.height = canvas.scrollHeight + 'px';
+
+  const sys = document.getElementById('t-system');
+  const stg = document.getElementById('t-staging');
+  const col = document.getElementById('t-column');
+
+  const sr = getRect(sys);
+  const tr = getRect(stg);
+  const cr = getRect(col);
+
+  const systemY    = rowMidY(sys, 1);
+  const srcSysY    = rowMidY(stg, 2);
+  const stgIDY     = rowMidY(stg, 0);
+  const fkIDY      = rowMidY(col, 1);
+
+  const x1 = sr.x + sr.w, x2 = tr.x;
+  const mx1 = (x1 + x2) / 2;
+  const x3 = tr.x + tr.w, x4 = cr.x;
+  const mx2 = (x3 + x4) / 2;
+
+  svg.innerHTML = `
+    <defs>
+      <marker id="m-one" viewBox="0 0 14 12" refX="12" refY="6" markerWidth="10" markerHeight="10" orient="auto-start-reverse">
+        <line x1="12" y1="1" x2="12" y2="11" stroke="#888780" stroke-width="1.3" stroke-linecap="round"/>
+        <line x1="9"  y1="1" x2="9"  y2="11" stroke="#888780" stroke-width="1.3" stroke-linecap="round"/>
+      </marker>
+      <marker id="m-many" viewBox="0 0 14 12" refX="2" refY="6" markerWidth="10" markerHeight="10" orient="auto">
+        <path d="M12 1L2 6L12 11" fill="none" stroke="#888780" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="12" y1="1" x2="12" y2="11" stroke="#888780" stroke-width="1.3" stroke-linecap="round"/>
+      </marker>
+    </defs>
+    <path d="M${x1} ${systemY} C${mx1} ${systemY} ${mx1} ${srcSysY} ${x2} ${srcSysY}"
+      fill="none" stroke="#888780" stroke-width="1.3"
+      marker-start="url(#m-one)" marker-end="url(#m-many)"/>
+    <path d="M${x3} ${stgIDY} C${mx2} ${stgIDY} ${mx2} ${fkIDY} ${x4} ${fkIDY}"
+      fill="none" stroke="#888780" stroke-width="1.3"
+      marker-start="url(#m-one)" marker-end="url(#m-many)"/>
+  `;
+}
+
+function makeDraggable(card) {
+  const header = card.querySelector('.table-header');
+  let dragging = false, ox, oy;
+  header.addEventListener('mousedown', e => {
+    dragging = true;
+    ox = e.clientX - parseInt(card.style.left);
+    oy = e.clientY - parseInt(card.style.top);
+    card.style.zIndex = 10;
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    card.style.left = Math.max(0, e.clientX - ox) + 'px';
+    card.style.top  = Math.max(0, e.clientY - oy) + 'px';
+    drawLines();
+  });
+  document.addEventListener('mouseup', () => {
+    if (dragging) { dragging = false; card.style.zIndex = ''; }
+  });
+}
+
+['t-system','t-staging','t-column'].forEach(id => makeDraggable(document.getElementById(id)));
+setTimeout(drawLines, 120);
+window.addEventListener('resize', drawLines);
+</script>

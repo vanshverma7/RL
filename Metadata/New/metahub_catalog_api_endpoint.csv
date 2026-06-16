@@ -1,0 +1,199 @@
+endpoint_id,dataset_id,template_id,endpoint_name,endpoint_path,http_method,request_headers,entity_name,fields_selection,page_size,max_pages,pagination_overrides,incremental_strategy,incremental_field,incremental_operator,watermark_format,response_root_path,is_flatten_nested,is_preserve_raw_response,api_config,is_active,created_at,created_by,updated_at,updated_by
+3,35,7,List Countries,/graphql,POST,,countries,"dbId
+         code
+         description",5000,,"{""cursor_param"": ""after"", ""has_next_path"": ""$.pageInfo.hasNextPage"", ""initial_cursor"": ""0"", ""page_size_param"": ""first"", ""cursor_quote_style"": ""escaped_double"", ""cursor_response_path"": ""$.pageInfo.endCursor"", ""full_args_template"": ""first: {{page_size}}\nafter: \""{{cursor}}\"""", ""incremental_args_template"": ""first: {{page_size}}\nafter: \""{{cursor}}\""""}",,,,,$['data']['countries'],true,false,"{
+  ""query_args_full"": ""first: {{SourceQueryPageSize}}\nafter: \\\""{{cursor_offset}}\\\"""",
+  ""query_args_incremental"": ""first: {{SourceQueryPageSize}}\nafter: \\\""{{cursor_offset}}\\\""""
+}",true,2026-02-09 09:30:56.1166667,system,2026-02-09 09:30:56.1166667,
+4,38,7,List Accounts,"",POST,,accounts,"dbId
+         code
+         description
+         ownerDbId
+         createdAt
+         modifiedAt
+         balanceSheet
+         asset
+         cost
+         credit
+         equity
+         finance
+         liabilities
+         posting
+         revenue
+         group
+         chartOfAccountDbId
+         chartOfAccount { code name }
+         descriptionTranslated
+         sysAccount { dbId code description }
+         accountIndicator { dbId code name }
+         ledgerType { dbId code name }
+         accountGroup { dbId code description levelParent { dbId code description levelParent { dbId code description levelParent { dbId code description levelParent { dbId code description } } } } }",5000,,"{""cursor_param"":""after"",""has_next_path"":""$.pageInfo.hasNextPage"",""initial_cursor"":""0"",""page_size_param"":""first"",""cursor_quote_style"":""escaped_double"",""cursor_response_path"":""$.pageInfo.endCursor"",""full_args_template"":""first: {{page_size}}\nafter: \""{{cursor}}\""\nownerSet: LOWER\nobjectStatus: ALL"",""incremental_args_template"":""first: {{page_size}}\nafter: \""{{cursor}}\""\nownerSet: LOWER\nobjectStatus: ALL\nfilter: { AND: [{ modifiedAt_gt: \""{{from}}\"" }{ modifiedAt_lt: \""{{to}}\"" }] }""}",watermark,modifiedAt,>,,$['data']['accounts'],true,false,"{
+  ""query_args_full"": ""first: {{SourceQueryPageSize}}\nafter: \\\""{{cursor_offset}}\\\""\nownerSet: LOWER\nobjectStatus: ALL"",
+  ""query_args_incremental"": ""first: {{SourceQueryPageSize}}\nafter: \\\""{{cursor_offset}}\\\""\nownerSet: LOWER\nobjectStatus: ALL\nfilter: { AND: [\n                { {{watermarkColumn}}_gt: \\\""{{from}}\\\"" }\n                { {{watermarkColumn}}_lt: \\\""{{to}}\\\""   }\n               ]\n        }""
+}",true,2026-02-13 09:50:05.9133333,system,2026-02-13 09:50:05.9133333,
+6,40,7,List Transactions,/graphql,POST,,transactions,"dbId
+         ownerDbId
+         accountDbId
+         amount
+         amount3
+         amount4
+         amount5
+         text
+         invoiceAmount
+         taxAmount
+         positionNumber
+         quantity
+         matchId
+         asset {
+           dbId
+         }
+         reconciled
+         periodNumber
+         monthNumber
+         periodId
+         glObject1DbId
+         glObject2DbId
+         glObject3DbId
+         glObject4DbId
+         glObject5DbId
+         companyDbId
+         accountIndicatorDbId
+         unitQuantity {
+           dbId
+         }
+         unitNumber {
+           dbId
+         }
+         xgl {
+           dbId
+         }
+         currency {
+           dbId
+         }
+         period {
+           dbId
+         }
+         taxRule {
+           dbId
+         }
+         bankAccount {
+           dbId
+         }
+         header {
+           postedDate
+           trRegNumber
+           transactionNumber
+           dbId
+           invoiceFile {
+             dbId
+             fileLocation {
+               dbId
+             }
+             fileType {
+               dbId
+               code
+               name
+             }
+             createdAt
+             modifiedAt
+             url
+             ownerDbId
+           }
+           period {
+             dbId
+           }
+           processType {
+             dbId
+           }
+           archive
+           createdAt
+           fiscalYear
+           importedAt
+           modifiedAt
+           jobLevel {
+             dbId
+           }
+           registeredAt
+           text
+           trProcessAction {
+             dbId
+           }
+           trProcessLevel {
+             code
+             dbId
+             name
+           }
+           transProcessLevel {
+             code
+             dbId
+             name
+           }
+           transactionSource {
+             dbId
+           }
+         }",5000,,"{""cursor_param"": ""after"", ""has_next_path"": ""$.pageInfo.hasNextPage"", ""initial_cursor"": ""0"", ""page_size_param"": ""first"", ""cursor_quote_style"": ""escaped_double"", ""cursor_response_path"": ""$.pageInfo.endCursor"", ""full_args_template"": ""first: {{page_size}}\nafter: \""{{cursor}}\""\nownerSet: LOWER\nfilter: { OR: [ { ownerDbId: 35957041 }, { ownerDbId: 35957051 } ] }""}",,,,,$.data.transactions,true,false,,true,2026-02-12 11:54:49.2966667,system,2026-02-12 11:54:49.2966667,
+7,50,14,List Periods,/graphql,POST,,periods,"dbId
+code
+description
+fromDate
+toDate
+year
+fiscalYear
+fiscalPeriod
+fiscalYearStartMonth
+monthNumber
+month {
+  dbId
+  code
+  name
+}
+period {
+  dbId
+  code
+  name
+}",5000,,,,,,,$['data']['viewer']['entity']['periods'],true,false,"{
+  ""query_args_full"": ""first: {{SourceQueryPageSize}}\nafter: \\\""{{cursor_offset}}\\\""\nobjectStatus: ALL"",
+  ""query_args_incremental"": ""first: {{SourceQueryPageSize}}\nafter: \\\""{{cursor_offset}}\\\""\nobjectStatus: ALL""
+}",true,2026-02-16 12:47:56.7866667,system,2026-02-16 12:47:56.7866667,
+8,60,7,List ObjectValues,/graphql,POST,,objectValues,"dbId
+         code
+         description
+         objectKindDbId
+         ownerDbId
+         createdAt
+         modifiedAt
+         dateFrom
+         dateTo
+         posting
+         text1
+         text2
+         codeTranslated
+         definition {
+           dbId
+           code
+           description
+         }
+         levelParent {
+             code
+             dbId
+             description
+             levelParent {
+                 code
+                 dbId
+                 description
+                 levelParent {
+                       code
+                       dbId
+                       description
+                       levelParent {
+                         code
+                         dbId
+                         description
+                       }
+                     }
+                   }
+                 }",5000,,,watermark,modifiedAt,gt,yyyy-MM-dd'T'HH:mm:ss,$['data']['objectValues'],true,false,"{
+               ""query_args_full"": ""first: {{SourceQueryPageSize}}\nafter: \\\""{{cursor_offset}}\\\""\nownerSet: MINE\nobjectStatus: ALL"",
+               ""query_args_incremental"": ""first: {{SourceQueryPageSize}}\nafter: \\\""{{cursor_offset}}\\\""\nownerSet: MINE\nobjectStatus: ALL\nfilter: { AND: [\n                { {{watermarkColumn}}_gt: \\\""{{from}}\\\"" }\n                { {{watermarkColumn}}_lt: \\\""{{to}}\\\""   }\n               ]\n        }""
+             }",true,2026-02-18 08:47:54.3733333,system,2026-02-18 08:47:54.3733333,
+9,72,15,skill_and_qualification,etws001api.json,GET,"{""iTrent-Operation"": ""skillqual"", ""PartyName"": ""Nest""}",skill_and_qualification,,,,,full,,,,$.itrent.Person,,,,true,2026-04-17 13:21:44.6800000,api_registrar,,

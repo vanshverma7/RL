@@ -1,0 +1,8 @@
+ConfigSystemID,SystemType,System,SystemCode,Server,Database,Host,URL,StorageAccount,Container,Directory,UserName,FileShare,KeyVaultSecret1,KeyVaultSecret2
+1,API_GraphQL,xledger,xlg,,,,https://www.xledger.net/graphql,,,,,,xledgerAPIToken,
+2,Datalake,landing,,,,,,sanestdpdevuksdbwh,dla-land,,,/Volumes/nest_ndp_dev/sources/landing,,
+3,ADLS_Excel,sage_archive,sag,,,,,sanestdpdevuksdbwh,sage-archive,,,,,
+5,ADLS_Excel,infosec,ifs,,,,,sanestdpdevuksdbwh,infosec-source,,,,,
+6,ADLS_Excel,poc_test,poc,,,,,sanestdpdevuksdbwh,poc-test,,,,,
+8,API_RetirementLine,retirement_line,ret,,,,https://rl-ssis.retirementline.co.uk/api/MIService/GetCubeData?CubeName=v_MI_PART_NEST_CubeData_V1,,,,,,RetirementLineAPIToken,
+9,ADLS_Excel,facility,fcs,,,,,sanestdpdevuksdbwh,facilities-source,,,,,

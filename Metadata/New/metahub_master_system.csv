@@ -1,0 +1,5 @@
+source_system_id,connection_type_id,owner_id,system_code,system_name,system_type_code,description,is_active,created_at,updated_at,created_by,updated_by
+100,16,,xlg,xledger,erp,Xledger ERP - Cloud accounting and finance system,true,2026-01-19 20:34:49.0473290,2026-01-19 20:34:49.0473290,system,
+101,8,,landing,Landing Zone,datalake,Azure Data Lake Gen2 Landing Zone,true,2026-01-19 20:34:49.0516680,2026-01-19 20:34:49.0516680,system,
+102,8,,inf,infosec,security,Information Security - compliance and audit data,true,2026-03-26 07:29:52.1900000,2026-03-26 07:29:52.1900000,system,
+104,2,,itr,itrent,link_table,iTrent HR & Payroll,true,2026-04-17 13:21:44.5900000,,api_registrar,

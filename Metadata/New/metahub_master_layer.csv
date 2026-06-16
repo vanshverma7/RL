@@ -1,0 +1,7 @@
+layer_id,layer_name,sort_order,description,created_at,updated_at,created_by,updated_by
+1,source,1,Original source system tables,2026-02-17 14:20:24.0066667,2026-02-17 14:20:24.0066667,system,
+2,landing,2,Raw data landing zone (data lake parquet),2026-02-17 14:20:24.0300000,2026-02-17 14:20:24.0300000,system,
+3,bronze,3,Raw data with minimal transformation,2026-02-17 14:20:24.0333333,2026-02-17 14:20:24.0333333,system,
+4,silver,4,"Cleansed, conformed, business entities",2026-02-17 14:20:24.0400000,2026-02-17 14:20:24.0400000,system,
+5,gold,5,"Aggregated, business-ready, dimensional model",2026-02-17 14:20:24.0433333,2026-02-17 14:20:24.0433333,system,
+6,semantic,6,BI-ready semantic layer for reporting,2026-02-17 14:20:24.0466667,2026-02-17 14:20:24.0466667,system,

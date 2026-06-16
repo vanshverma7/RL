@@ -1,0 +1,1676 @@
+ConfigStagingID,BatchName,SourceSystem,TargetSystem,SourceTableSchema,SourceTableName,SourceQueryTemplateID,SourceQueryTemplateArgumentsFull,SourceQueryTemplateArgumentsIncremental,SourceQueryTemplateColumns,SourceQueryPageSize,SourceQuery,SourceFileSystem,SourceDirectory,SourceFileName,SourceSheetName,FirstRowAsHeaders,TargetTableSchema,TargetTableName,TargetTableFormat,JsonEntityReference,MapComplexValuesToString,PartitionByColumns,RowFilter,ColumnList,ColumnListMapping,BusinessKey,Enabled,LoadType,InitialLoad,IncrementalColumn,Token,LoadStart,LoadEnd,SQLQuery,LoadMethod,TruncateBeforeLoad,SQLTokenString,LastRunStatus,DisableAndRebuildIndexes,PathType
+1,prod,xledger,landing,,accounts,1,"first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER
+objectStatus: ALL","first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER
+objectStatus: ALL
+filter: { AND: [
+                { {{watermarkColumn}}_gt: \""{{from}}\"" }
+                { {{watermarkColumn}}_lt: \""{{to}}\""   }
+               ]
+        }","dbId
+code
+description
+ownerDbId
+createdAt
+modifiedAt
+balanceSheet
+asset
+cost
+credit
+equity
+finance
+liabilities
+posting
+revenue
+group
+chartOfAccountDbId
+chartOfAccount {
+  code
+  name
+}
+descriptionTranslated
+sysAccount {
+  dbId
+  code
+  description
+}
+accountIndicator {
+  dbId
+  code
+  name
+}
+ledgerType {
+  dbId
+  code
+  name
+}
+accountGroup {
+  dbId
+  code
+  description
+  levelParent {
+    dbId
+    code
+    description
+    levelParent {
+      dbId
+      code
+      description
+      levelParent {
+        dbId
+        code
+        description
+        levelParent {
+          dbId
+          code
+          description
+        }
+      }
+    }
+  }
+}",5000,,,,,,,corp,xlg_account,parquet,$['data']['accounts'],,,,,,account_dbid,Y,I,Y,modifiedAt,2026-04-17T10:42:48,2026-04-17 10:41:25.993,2026-04-17 10:44:51.297,,,N,,Completed,N,
+2,out_of_scope,xledger,landing,,accountBalances,1,"first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER","first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER","dbId
+amount
+ownerDbId
+amount3
+amount4
+amount5
+quantity
+fiscalYear
+periodNumber
+monthNumber
+periodId
+accountDbId
+glObject1DbId
+glObject2DbId
+glObject3DbId
+glObject4DbId
+glObject5DbId
+systemAccount {
+  dbId
+}
+owner {
+  dbId
+}
+company {
+  dbId
+}
+account{
+  dbId
+}
+xgl{
+  dbId
+}
+budget
+quantityBudget",5000,,,,,,,corp,xlg_account_balance,parquet,$['data']['accountBalances'],,,,,,account_balance_dbid,N,F,Y,,2025-02-03T17:03:12,2025-02-03 17:02:59.517,2025-02-03 17:09:19.437,,,Y,,Completed,N,
+3,prod,xledger,landing,,addresses,4,"first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER","first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER
+filter: { AND: [
+                { {{watermarkColumn}}_gt: \""{{from}}\"" }
+                { {{watermarkColumn}}_lt: \""{{to}}\""   }
+               ]
+        }","dbId
+zipCode
+place
+fullAddress
+createdAt
+modifiedAt
+ownerDbId
+streetAddress
+streetNumber
+zipCodeExt
+buildingUnit
+streetType {
+  dbId
+}
+streetDirectionPre {
+  dbId
+}
+streetDirectionPost {
+  dbId
+}
+buildingType {
+  dbId
+}
+country {
+  dbId
+}
+state {
+  dbId
+}",5000,,,,,,,corp,xlg_address,parquet,$['data']['addresses'],,,,,,address_dbid,Y,I,Y,modifiedAt,2025-12-08T07:02:58,2025-12-08 07:02:11.457,2025-12-08 07:03:50.370,,,N,,Completed,N,
+4,full,xledger,landing,,apTransactions,1,"first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER","first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER","dbId
+account {
+    dbId
+}
+text
+invoiceNumber
+exchangeRate
+invoiceRemaining
+invoiceAmount
+interest
+lateFee
+amount
+amount3
+amount4
+amount5
+extIdentifier
+paymentDate
+reminderDate
+lastPaymentDate
+invoiceDate
+dueDate
+paymentReference
+ownerDbId
+modifiedAt
+reconciled
+interestDate
+bankAccount
+matchId
+withheld
+subledgerDbId
+headerCreatedAt
+headerModifiedAt
+headerTransactionSourceDbId
+transactionHeaderDbId
+periodDbId
+slKeyDbId
+slKeyDescription
+slTransactionType {
+    dbId
+}
+slType {
+    dbId
+}
+payCode {
+    dbId
+    code
+    name
+}
+glDimension {
+glObject1 {
+    dbId
+}
+glObject2 {
+    dbId
+}
+glObject3 {
+    dbId
+}
+glObject4 {
+    dbId
+}
+glObject5 {
+    dbId
+}
+}
+company {
+    dbId
+}
+currency {
+    dbId
+}
+xgl {
+    dbId
+}
+billAddress {
+    dbId
+}
+paymentStatus {
+    dbId
+    code
+    name
+}
+transactionHeader {
+    postedDate
+    trRegNumber
+    transactionNumber
+    dbId
+    invoiceFile {
+        dbId
+        fileLocation {
+        dbId
+        }
+        fileType {
+        dbId
+        code
+        name
+        }
+        createdAt
+        modifiedAt
+        url
+        ownerDbId
+    }
+    period {
+        dbId
+    }
+    processType {
+        dbId
+    }
+    archive
+    createdAt
+    fiscalYear
+    importedAt
+    modifiedAt
+    jobLevel {
+        dbId
+    }
+    registeredAt
+    text
+    trProcessAction {
+        dbId
+    }
+    trProcessLevel {
+        code
+        dbId
+        name
+    }
+    transProcessLevel {
+        code
+        dbId
+        name
+    }
+    transactionSource {
+        dbId
+    }
+    user {
+        dbId
+    }
+}",5000,,,,,,,corp,xlg_ap_transaction,parquet,$['data']['apTransactions'],,,,,,ap_transaction_dbid,Y,F,Y,,2026-02-25T07:48:23,2026-02-25 07:47:19.420,2026-02-25 07:50:41.323,,,Y,,Completed,N,
+5,out_of_scope,xledger,landing,,banks,1,"first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER
+objectStatus: ALL","first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER
+objectStatus: ALL
+filter: { AND: [
+                { {{watermarkColumn}}_gt: \""{{from}}\"" }
+                { {{watermarkColumn}}_lt: \""{{to}}\""   }
+               ]
+        }","dbId
+code
+description
+phone
+createdAt
+modifiedAt
+ownerDbId
+isBankingCenter
+fractionalRoutingNumber
+bankName
+bankRegister
+bankRouting
+bankTransit
+branch
+clearingCode
+fax
+internalId
+swiftReimbursementBank
+swift
+swiftOutbound
+country {
+  dbId
+}
+address {
+  dbId
+}",5000,,,,,,,corp,xlg_bank,parquet,$['data']['banks'],,,,,,bank_dbid,N,I,Y,modifiedAt,2025-02-03T15:33:39,2025-02-03 15:33:28.203,2025-02-03 15:35:00.140,,,N,,Completed,N,
+6,out_of_scope,xledger,landing,,budgetBalances,1,"first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER","first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER","dbId
+amount
+ownerDbId
+budgetDbId
+amount3
+amount4
+amount5
+quantity
+fiscalYear
+periodNumber
+monthNumber
+periodId
+accountDbId
+glObject1DbId
+glObject2DbId
+glObject3DbId
+glObject4DbId
+glObject5DbId
+systemAccount {
+  dbId
+}
+company {
+  dbId
+}
+xgl {
+  dbId
+}",5000,,,,,,,corp,xlg_budget_balance,parquet,$['data']['budgetBalances'],,,,,,budget_balance_dbid,N,F,Y,,2025-06-09T06:03:14,2025-06-09 06:01:36.433,2025-06-09 06:34:57.133,,,N,,Completed,N,
+7,prod,xledger,landing,,budgetDetails,1,"first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER","first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER 
+filter: { AND: [
+                { {{watermarkColumn}}_gt: \""{{from}}\"" }
+                { {{watermarkColumn}}_lt: \""{{to}}\""   }
+               ]
+        }","dbId
+amount
+ownerDbId
+budgetDbId
+amount3
+amount4
+amount5
+quantity
+createdAt
+modifiedAt
+text
+periodDbId
+account {
+  dbId
+}
+glObject1 {
+  dbId
+}
+glObject2 {
+  dbId
+}
+glObject3 {
+  dbId
+}
+glObject4 {
+  dbId
+}
+glObject5 {
+  dbId
+}
+company {
+  dbId
+}
+xgl {
+  dbId
+}
+currency {
+  dbId
+}",10000,,,,,,,corp,xlg_budget_detail,parquet,$['data']['budgetDetails'],,,,,,budget_detail_dbid,Y,I,Y,modifiedAt,2025-12-08T07:02:59,2025-12-08 07:02:13.533,2025-12-08 07:05:01.027,,,Y,,Completed,N,
+8,prod,xledger,landing,,companies,1,"first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER
+objectStatus: ALL ","first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER 
+objectStatus: ALL
+filter: { AND: [
+                { {{watermarkColumn}}_gt: \""{{from}}\"" }
+                { {{watermarkColumn}}_lt: \""{{to}}\""   }
+               ]
+        }","dbId
+code
+description
+email
+phone
+createdAt
+modifiedAt
+ownerDbId
+companyNumber
+companyName
+name
+phone2
+socialSec
+taxNo
+country
+taxNumber
+descriptionTranslated
+imageFile {
+  dbId
+}
+billAddress {
+  dbId
+}
+shipAddress {
+  dbId
+}
+address {
+  dbId
+}
+phoneType{
+  dbId
+}
+phoneType2{
+  dbId
+}
+contact {
+  dbId
+}
+notes",5000,,,,,,,corp,xlg_company,parquet,$['data']['companies'],,,,,,company_dbid,Y,I,Y,modifiedAt,2025-12-08T07:03:00,2025-12-08 07:02:11.893,2025-12-08 07:03:52.590,,,Y,,Completed,N,
+9,prod,xledger,landing,,contacts,1,"first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER
+objectStatus: ALL","first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER
+objectStatus: ALL
+filter: { AND: [
+                { {{watermarkColumn}}_gt: \""{{from}}\"" }
+                { {{watermarkColumn}}_lt: \""{{to}}\""   }
+               ]
+        }","dbId
+code
+phone
+email
+createdAt
+modifiedAt
+fromDate
+toDate
+ownerDbId
+id
+name
+firstName
+middleName
+lastName
+initials
+aliasName
+maidenName
+prefix
+suffix
+jobTitle
+profession
+birthday
+companyName
+companyContact
+doNotCall
+noEmail
+noMail
+noSms
+noTul
+phone2
+phone3
+email2
+email3
+deathDate
+notes
+age
+personalId
+socialSec
+companyPerson
+gender {
+  dbId
+}
+hasFlexiField
+flexiFieldFlag1
+flexiFieldFlag2
+flexiFieldFlag3
+flexiFieldFlag4
+flexiFieldDate1
+flexiFieldDate2
+flexiFieldDate3
+flexiFieldDate4
+flexiFieldValue1
+flexiFieldValue2
+flexiFieldValue3
+flexiFieldValue4
+flexiFieldNumber1
+flexiFieldNumber2
+flexiFieldText1
+flexiFieldText2
+flexiFieldText3
+flexiFieldText4
+flexiFieldText5
+flexiFieldText6
+flexiFieldText7
+flexiFieldText8
+flexiFieldCode1DbId
+flexiFieldCode2DbId
+flexiFieldCode3DbId
+flexiFieldCode4DbId
+flexiFieldCode5DbId
+flexiFieldCode6DbId
+flexiFieldCode7DbId
+flexiFieldCode8DbId
+country {
+  dbId
+}
+maritalStatus {
+  dbId
+}
+exitReason {
+  dbId
+}
+user {
+  dbId
+}
+contactGroup {
+  dbId
+}
+billAddress {
+  dbId
+}
+address {
+  dbId
+}
+homeAddress {
+  dbId
+}
+shipAddress {
+  dbId
+}",5000,,,,,,,corp,xlg_contact,parquet,$['data']['contacts'],,,,,,contact_dbid,Y,I,Y,modifiedAt,2025-12-08T07:02:59,2025-12-08 07:02:10.877,2025-12-08 07:03:46.947,,,N,,Completed,N,
+10,prod,xledger,landing,,countries,1,"first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""","first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""","dbId
+code
+description",5000,,,,,,,corp,xlg_country,parquet,$['data']['countries'],,,,,,country_dbid,Y,F,Y,,2026-02-17T13:56:09,2026-02-17 13:55:56.427,2026-02-17 13:57:15.413,,,Y,,Completed,N,
+11,prod,xledger,landing,,currencies,1,"first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""","first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""","dbId
+code
+description",5000,,,,,,,corp,xlg_currency,parquet,$['data']['currencies'],,,,,,currency_dbid,Y,F,Y,,2025-12-08T07:02:59,2025-12-08 07:02:09.753,2025-12-08 07:04:52.370,,,Y,,Completed,N,
+12,prod,xledger,landing,,entities,1,"first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER
+objectStatus: ALL","first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER
+objectStatus: ALL
+filter: { AND: [
+                { {{watermarkColumn}}_gt: \""{{from}}\"" }
+                { {{watermarkColumn}}_lt: \""{{to}}\""   }
+               ]
+        }","dbId
+code
+description
+ownerDbId
+createdAt
+modifiedAt
+fromDate
+toDate
+email
+phone
+fiscalYearStartMonth
+sicCode
+hierarchySort
+employerNumber
+notes
+currency {
+    dbId
+}
+company {
+    dbId
+}
+phoneType {
+    dbId
+    code
+    name
+}
+language {
+    dbId
+}
+region {
+    dbId
+}
+entitySize {
+    dbId
+    code
+    name
+}
+billAddress {
+    dbId
+}
+shipAddress {
+    dbId
+}
+address {
+    dbId
+}
+ourContact {
+    dbId
+}
+parent {
+    dbId
+    code
+    description
+}
+xlClassification {
+    dbId
+    code
+    description
+}",5000,,,,,,,corp,xlg_entity,parquet,$['data']['entities'],,,,,,entity_dbid,Y,I,Y,modifiedAt,2025-12-08T07:03:01,2025-12-08 07:02:10.800,2025-12-08 07:03:50.323,,,N,,Completed,N,
+13,prod,xledger,landing,,objectValues,1,"first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: MINE
+objectStatus: ALL","first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: MINE
+objectStatus: ALL
+filter: { AND: [
+                { {{watermarkColumn}}_gt: \""{{from}}\"" }
+                { {{watermarkColumn}}_lt: \""{{to}}\""   }
+               ]
+        }","dbId
+code
+description
+objectKindDbId
+ownerDbId
+createdAt
+modifiedAt
+dateFrom
+dateTo
+posting
+text1
+text2
+codeTranslated
+definition {
+  dbId
+  code
+  description
+}
+levelParent {
+    code
+    dbId
+    description
+    levelParent {
+        code
+        dbId
+        description
+        levelParent {
+              code
+              dbId
+              description
+              levelParent {
+                code
+                dbId
+                description
+              }
+            }
+          }
+        }",5000,,,,,,,corp,xlg_object_value,parquet,$['data']['objectValues'],,,,,,object_value_dbid,Y,I,Y,modifiedAt,2025-12-08T07:04:20,2025-12-08 07:04:05.000,2025-12-08 07:05:25.557,,,N,,Completed,N,
+14,prod,xledger,landing,,periods,2,"first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+objectStatus: ALL","first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+objectStatus: ALL","dbId
+code
+description
+fromDate
+toDate
+year
+fiscalYear
+fiscalPeriod
+fiscalYearStartMonth
+monthNumber
+month {
+  dbId
+  code
+  name
+}
+period {
+  dbId
+  code
+  name
+}",5000,,,,,,,corp,xlg_period,parquet,$['data']['viewer']['entity']['periods'],,,,,,period_dbid,Y,F,Y,,2026-02-17T12:06:38,2026-02-17 12:04:58.970,2026-02-17 12:08:47.720,,,Y,,Completed,N,
+15,prod,xledger,landing,,projects,1,"first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER
+objectStatus: ALL","first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER
+objectStatus: ALL
+filter: { AND: [
+                { {{watermarkColumn}}_gt: \""{{from}}\"" }
+                { {{watermarkColumn}}_lt: \""{{to}}\""   }
+               ]
+        }","dbId
+code
+description
+ownerDbId
+createdAt
+modifiedAt
+fromDate
+toDate
+text
+external
+billable
+fixedClient
+allowPosting
+timesheetEntry
+accessControl
+assignment
+activity
+expenseLedger
+fundProject
+pctCompleted
+totalEstimateHours
+totalCost
+totalRevenue
+glObject1 {
+  dbId
+}
+glObject2 {
+  dbId
+}
+glObject3 {
+  dbId
+}
+glObject4 {
+  dbId
+}
+glObject5 {
+  dbId
+}
+mainProjectDbId
+ourSales {
+  dbId
+  code
+}
+ourRef {
+  dbId
+  code
+}
+projectGroup {
+  dbId
+}
+invoiceDeliveryMethod {
+  dbId
+}
+incomePeriodization {
+  dbId
+}
+invoiceProject {
+  dbId
+}
+latePaymentCode {
+  dbId
+}
+mainProject {
+  dbId
+}
+priceGroup {
+  dbId
+}
+pricelist {
+  dbId
+}
+projectManager {
+  dbId
+}
+projectType {
+  dbId
+}
+",5000,,,,,,,corp,xlg_project,parquet,$['data']['projects'],,,,,,project_dbid,Y,I,Y,modifiedAt,2025-12-08T07:05:31,2025-12-08 07:05:14.477,2025-12-08 07:06:11.050,,,N,,Completed,N,
+16,prod,xledger,landing,,purchaseOrders,1,"first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER","first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER
+filter: { AND: [
+                { {{watermarkColumn}}_gt: \""{{from}}\"" }
+                { {{watermarkColumn}}_lt: \""{{to}}\""   }
+               ]
+        }","dbId
+description
+createdAt
+modifiedAt
+orderNumber
+amount
+invoiceAmount
+taxAmount
+ownerDbId
+exchangeRate
+isApproved
+isClosed
+createGoodsReceipt
+showOrderPrice
+printed
+goodsReceived
+toDelivery
+expiredDate
+approvedAt
+orderAt
+purchaseAt
+partialTax
+posted
+receivedAmount
+contract
+headerInfo
+requestedBy
+shippingText
+extOrder
+yourRef
+earliestDeliveryDate
+latestDeliveryDate
+deliveredDate
+lastDeliveryDate
+confirmedDate
+estimatedDeliveryDate
+confirmedDeliveryDate
+currency {
+dbId
+}
+xgl {
+dbId
+}
+billAddress {
+  dbId
+}
+shipAddress {
+  dbId
+}
+company {
+dbId
+}
+customerCompany {
+dbId
+}
+ourOrderedBy {
+dbId
+}
+ourRef {
+dbId
+}
+invoiceDeliveryMethod {
+dbId
+code
+name
+}
+lgOrderProcessing {
+dbId
+}
+poOrderLevel {
+dbId
+name
+}
+poOrderType {
+dbId
+name
+}
+account {
+dbId
+}
+approvedBy {
+dbId
+}
+glObject1 {
+dbId
+}
+glObject2 {
+dbId
+}
+glObject3 {
+dbId
+}
+glObject4 {
+dbId
+}
+glObject5 {
+dbId
+}
+payMethod {
+dbId
+}
+payTerms {
+dbId
+}
+project {
+dbId
+}
+purchaseType {
+dbId
+}
+shippingTerms {
+dbId
+}
+subledger {
+dbId
+}
+customerSubledger {
+dbId
+}
+file {
+dbId
+}
+transactionHeaderDbId
+details {
+ dbId
+ account {
+   dbId
+   accountGroupDbId
+ }
+ amount
+ createdAt
+ discountAmount
+ discountPercent
+ extProductNumber
+ glObject1 {
+   dbId
+ }
+ glObject2 {
+   dbId
+ }
+ glObject3 {
+   dbId
+ }
+ glObject4 {
+   dbId
+ }
+ glObject5 {
+   dbId
+ }
+ invoiceAmount
+ isFixedPrice
+ lineNumber
+ location {
+   dbId
+ }
+ lotNumber
+ modifiedAt
+ owner {
+   dbId
+ }
+ partialTax
+ postedQuantity
+ product {
+   dbId
+ }
+ productDimension {
+   dbId
+ }
+ project {
+   dbId
+ }
+ quantity
+ receivedQuantity
+ taxAmount
+ taxRule {
+   dbId
+ }
+ text
+ unit {
+   dbId
+ }
+ unitPrice
+ xgl {
+   dbId
+}
+}",5000,,,,,,,corp,xlg_purchase_order,parquet,$['data']['purchaseOrders'],Y,,,,,purchase_order_dbid,Y,I,Y,modifiedAt,2026-02-25T07:57:35,2026-02-25 07:57:19.213,2026-02-25 07:58:45.033,,,N,,Completed,N,
+17,prod,xledger,landing,,suppliers,1,"first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER","first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER
+filter: { AND: [
+                { {{watermarkColumn}}_gt: \""{{from}}\"" }
+                { {{watermarkColumn}}_lt: \""{{to}}\""   }
+               ]
+        }","dbId
+code
+description
+codeTranslated
+descriptionTranslated
+extIdentifier
+createdAt
+modifiedAt
+email
+phone
+invoiceNumber
+yourReference
+fromDate
+toDate
+ownerDbId
+id
+number
+paymentNotification
+creditLimit
+contract
+notes
+phone2
+taxNo
+payDocText
+bankAccount
+companyDbId
+subledgerGroupDbId
+address {
+  dbId
+}
+billAddress {
+  dbId
+}
+shipAddress {
+  dbId
+}
+invoiceDeliveryMethod {
+  dbId
+}
+invoiceLayout {
+  dbId
+}
+payMethod {
+  dbId
+}
+payTerms {
+  dbId
+}
+contact {
+  dbId
+}
+ourRef {
+  dbId
+  code
+}
+ourSales {
+  dbId
+  code
+}
+bank {
+  dbId
+}
+apTaxReporting {
+  dbId
+  code
+}
+collection {
+  dbId
+}
+taxRule {
+  dbId
+}
+phoneType {
+  dbId
+}
+ledgerType {
+  dbId
+}
+language {
+  dbId
+}",5000,,,,,,,corp,xlg_supplier,parquet,$['data']['suppliers'],,,,,,supplier_dbid,Y,I,Y,modifiedAt,2025-12-08T07:04:14,2025-12-08 07:04:02.733,2025-12-08 07:04:55.637,,,N,,Completed,N,
+18,full,xledger,landing,,transactions,1,"first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER
+filter: { OR: [ { ownerDbId: 35957041 }, { ownerDbId: 35957051 } ] }","first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER
+filter: { OR: [ { ownerDbId: 35957041 }, { ownerDbId: 35957051 } ] }","dbId
+ownerDbId
+accountDbId
+amount
+amount3
+amount4
+amount5
+text
+invoiceAmount
+taxAmount
+positionNumber
+quantity
+matchId
+asset {
+  dbId
+}
+reconciled
+periodNumber
+monthNumber
+periodId
+glObject1DbId
+glObject2DbId
+glObject3DbId
+glObject4DbId
+glObject5DbId
+companyDbId
+accountIndicatorDbId
+unitQuantity {
+  dbId
+}
+unitNumber {
+  dbId
+}
+xgl {
+  dbId
+}
+currency {
+  dbId
+}
+period {
+  dbId
+}
+taxRule {
+  dbId
+}
+bankAccount {
+  dbId
+}
+header {
+  postedDate
+  trRegNumber
+  transactionNumber
+  dbId
+  invoiceFile {
+    dbId
+    fileLocation {
+      dbId
+    }
+    fileType {
+      dbId
+      code
+      name
+    }
+    createdAt
+    modifiedAt
+    url
+    ownerDbId
+  }
+  period {
+    dbId
+  }
+  processType {
+    dbId
+  }
+  archive
+  createdAt
+  fiscalYear
+  importedAt
+  modifiedAt
+  jobLevel {
+    dbId
+  }
+  registeredAt
+  text
+  trProcessAction {
+    dbId
+  }
+  trProcessLevel {
+    code
+    dbId
+    name
+  }
+  transProcessLevel {
+    code
+    dbId
+    name
+  }
+  transactionSource {
+    dbId
+  }
+}",5000,,,,,,,corp,xlg_transaction,parquet,$['data']['transactions'],,,,,,transaction_dbid,Y,F,Y,,2025-12-08T07:02:59,2025-12-08 07:02:06.220,2025-12-08 07:31:53.500,,,Y,,Completed,N,
+19,prod,xledger,landing,,xglDimensions,1,"first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER
+objectStatus: ALL","first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER
+objectStatus: ALL
+filter: { AND: [
+                { {{watermarkColumn}}_gt: \""{{from}}\"" }
+                { {{watermarkColumn}}_lt: \""{{to}}\""   }
+               ]
+        }","dbId
+code
+description
+ownerDbId
+createdAt
+modifiedAt
+allowPosting",5000,,,,,,,corp,xlg_xgl_dimension,parquet,$['data']['xglDimensions'],,,,,,xgl_dimension_dbid,Y,I,Y,modifiedAt,2025-12-08T07:05:22,2025-12-08 07:05:07.090,2025-12-08 07:06:02.470,,,N,,Completed,N,
+20,prod,xledger,landing,,products,1,"first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER
+objectStatus: ALL","first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER
+objectStatus: ALL
+filter: { AND: [
+                { {{watermarkColumn}}_gt: \""{{from}}\"" }
+                { {{watermarkColumn}}_lt: \""{{to}}\""   }
+               ]
+        }","dbId
+code
+description
+ownerDbId
+createdAt
+modifiedAt
+exchangeRate
+model
+partNo
+volume
+weight
+forSale
+allowPosting
+useWarehouse
+hasInvoiceDetails
+inStock
+useLocation
+hasVariableCostPrice
+useSerialNo
+useLotNo
+variable
+hasDateLimit
+availableForPurchase
+dateLimit
+expenses
+warehouse
+averagePrice
+salesPrice
+costPrice
+internalInfo
+productGroupDbId
+unit
+supplier
+overview
+productInfo
+hasFlexiField
+flexiFieldFlag1
+flexiFieldFlag2
+flexiFieldFlag3
+flexiFieldFlag4
+flexiFieldDate1
+flexiFieldDate2
+flexiFieldDate3
+flexiFieldDate4
+flexiFieldValue1
+flexiFieldValue2
+flexiFieldValue3
+flexiFieldValue4
+flexiFieldNumber1
+flexiFieldNumber2
+flexiFieldText1
+flexiFieldText2
+flexiFieldText3
+flexiFieldText4
+flexiFieldText5
+flexiFieldText6
+flexiFieldText7
+flexiFieldText8
+flexiFieldCode1DbId
+flexiFieldCode2DbId
+flexiFieldCode3DbId
+flexiFieldCode4DbId
+flexiFieldCode5DbId
+flexiFieldCode6DbId
+flexiFieldCode7DbId
+flexiFieldCode8DbId
+currency {
+  dbId
+}
+manufacturer {
+  dbId
+}
+taxRule {
+  dbId
+}
+xgl {
+  dbId
+}",5000,,,,,,,corp,xlg_product,parquet,$['data']['products'],,,,,,product_dbid,Y,I,Y,modifiedAt,2025-12-08T07:05:21,2025-12-08 07:05:11.390,2025-12-08 07:06:02.360,,,N,,Completed,N,
+26,delta,xledger,landing,,transaction_deltas,3,"first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER","first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER","dbId
+        ownerDbId
+        accountDbId
+        amount
+        amount3
+        amount4
+        amount5
+        text
+        invoiceAmount
+        taxAmount
+        positionNumber
+        quantity
+        matchId
+        reconciled
+        periodNumber
+        monthNumber
+        periodId
+        companyDbId
+ 
+        unitQuantity {
+          dbId
+        }
+        unitNumber {
+          dbId
+        }
+        xgl {
+          dbId
+        }
+        currency {
+          dbId
+        }
+        period {
+          dbId
+        }
+        taxRule {
+          dbId
+        }
+ 
+        header {
+          postedDate
+          trRegNumber
+          transactionNumber
+          dbId
+          invoiceFile {
+            dbId
+            fileLocation {
+              dbId
+            }
+            fileType {
+              dbId
+              code
+              name
+            }
+            createdAt
+            modifiedAt
+            url
+            ownerDbId
+          }
+          period {
+            dbId
+          }
+          processType {
+            dbId
+          }
+          archive
+          createdAt
+          fiscalYear
+          importedAt
+          modifiedAt
+          jobLevel {
+            dbId
+          }
+          registeredAt
+          text
+          trProcessAction {
+            dbId
+          }
+          trProcessLevel {
+            code
+            dbId
+            name
+          }
+          transProcessLevel {
+            code
+            dbId
+            name
+          }
+          transactionSource {
+            dbId
+          }
+        }
+        glDimension {
+          glObject1 {
+            dbId
+          }
+          glObject2 {
+            dbId
+          }
+          glObject3 {
+            dbId
+          }
+          glObject4 {
+            dbId
+          }
+          glObject5 {
+            dbId
+          }
+        }",5000,,,,,,,corp,xlg_transaction_delta,parquet,$['data']['transaction_deltas'],,,,,,transaction_delta_dbid,Y,F,Y,,2025-12-08T07:02:58,2025-12-08 07:02:05.313,2025-12-08 07:05:06.187,,,Y,,Completed,N,
+31,out_of_scope,xledger,landing,,links,1,"first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""","first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+filter: { AND: [
+                { {{watermarkColumn}}_gt: \""{{from}}\"" }
+                { {{watermarkColumn}}_lt: \""{{to}}\""   }
+               ]
+        }","dbId
+code
+description
+createdAt
+modifiedAt
+dateLimit
+flexiGroupDbId
+childTitle {
+  code
+  dbId
+  description
+}
+code1Title {
+  code
+  dbId
+  description
+}
+code2Title {
+  code
+  dbId
+  description
+}
+linkChild {
+  code
+  dbId
+  description
+}
+linkParent {
+  code
+  dbId
+  description
+}
+linkTable {
+  dbId
+  code
+  name
+}
+object1Title {
+  code
+  dbId
+  description
+}
+owner {
+  dbId
+}
+parentTitle {
+  dbId
+  code
+  description
+}
+object4Title {
+  code
+  dbId
+  description
+}
+object3Title {
+  code
+  dbId
+  description
+}
+object2Title {
+  code
+  description
+  dbId
+}
+",10000,,,,,,,corp,xlg_link,parquet,$['data']['links'],,,,,,link_dbid,Y,I,Y,modifiedAt,2025-02-07T07:04:20,2025-02-07 07:04:09.227,2025-02-07 07:05:21.477,,,Y,,Completed,N,
+39,full,xledger,landing,,linkValues,1,"first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER","first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER
+filter: { AND: [
+                { {{watermarkColumn}}_gt: \""{{from}}\"" }
+                { {{watermarkColumn}}_lt: \""{{to}}\""   }
+               ]
+        }","dbId
+createdAt
+modifiedAt
+ownerDbId
+dateFrom
+dateTo
+linkDbId
+linkParentDbId
+linkChildDbId
+value1
+date1
+linkChild {
+  code
+  dbId
+  description
+}
+linkParent {
+  code
+  dbId
+  description
+}",5000,,,,,,,corp,xlg_link_value,parquet,$['data']['linkValues'],,,,,,link_value_dbid,Y,F,Y,modifiedAt,2025-12-08T07:03:00,2025-12-08 07:02:08.407,2025-12-08 07:03:46.947,,,Y,,Completed,N,
+57,prod,xledger,landing,,users,1,"first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER
+objectStatus: ALL","first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER
+objectStatus: ALL
+filter: { AND: [
+                { {{watermarkColumn}}_gt: \""{{from}}\"" }
+                { {{watermarkColumn}}_lt: \""{{to}}\""   }
+               ]
+        }","dbId
+code
+description
+fromDate
+toDate
+email
+createdAt
+modifiedAt
+mobile
+auditor
+demoUser
+locked
+email2
+preferredOwner {
+    dbId
+}
+payEntity {
+    dbId
+}
+ourContact {
+    dbId
+}
+authType {
+    dbId
+    code
+    name
+}
+cultureInfo {
+    dbId
+}
+language {
+    dbId
+}
+owner {
+    dbId
+}
+userFile {
+    dbId
+}
+",5000,,,,,,,corp,xlg_user,parquet,$['data']['users'],,,,,,user_dbid,Y,I,Y,modifiedAt,2025-12-08T07:04:16,2025-12-08 07:04:05.547,2025-12-08 07:05:24.370,,,N,,Completed,N,
+64,sage,sage_archive,landing,,NEST CORP - Nominal Cost Centres 060125.xlsx,,,,,,,Excel,,NEST CORP - Nominal Cost Centres 060125.xlsx,NEST CORP - Nominal Cost Centre,Y,sage,sag_cost_centre,parquet,,,,,,,cost_centre_code,Y,F,Y,,,2025-02-19 11:48:05.380,2025-02-19 11:50:44.270,,I,Y,,Completed,N,static
+65,sage,sage_archive,landing,,NEST CORP - Customer Accounts 060125.xlsx,,,,,,,Excel,,NEST CORP - Customer Accounts 060125.xlsx,NEST CORP - Customer Accounts 0,Y,sage,sag_corp_customer_account,parquet,,,,,,,account_number,Y,F,Y,,,2025-02-19 14:02:34.023,2025-02-19 14:03:16.163,,I,N,,Completed,N,static
+66,sage,sage_archive,landing,,NEST CORP - Bank Accounts 060125 v2.xlsx,,,,,,,Excel,,NEST CORP - Bank Accounts 060125 v2.xlsx,Sheet1,Y,sage,sag_corp_bank_account,parquet,,,,,,,cb_account_id,Y,F,Y,,,2025-02-25 14:57:35.887,2025-02-25 15:00:18.590,,I,N,,Completed,N,static
+67,sage,sage_archive,landing,,NEST CORP - Bank Account Transactions 060125 v2.xlsx,,,,,,,Excel,,NEST CORP - Bank Account Transactions 060125 v2.xlsx,Sheet1,Y,sage,sag_corp_bank_account_transaction,parquet,,,,,,,cb_posted_account_tran_id,Y,F,Y,,,2025-03-19 10:17:30.730,2025-03-19 10:19:32.793,,I,N,,Completed,N,static
+68,sage,sage_archive,landing,,NEST CORP - Customer Contacts 060125.xlsx,,,,,,,Excel,,NEST CORP - Customer Contacts 060125.xlsx,NEST CORP - Customer Contacts 0,Y,sage,sag_corp_customer_contact,parquet,,,,,,,customer_account_number,Y,F,Y,,,2025-02-19 14:30:24.703,2025-02-19 14:31:07.580,,I,N,,Completed,N,static
+69,sage,sage_archive,landing,,NEST CORP - Customer Transactions 060125.xlsx,,,,,,,Excel,,NEST CORP - Customer Transactions 060125.xlsx,NEST CORP - Customer Transactio,Y,sage,sag_corp_customer_transaction,parquet,,,,,,,urn,Y,F,Y,,,2025-02-19 14:41:49.590,2025-02-19 14:42:29.387,,I,N,,Completed,N,static
+70,sage,sage_archive,landing,,NEST CORP - Nominal Accounts 060125.xlsx,,,,,,,Excel,,NEST CORP - Nominal Accounts 060125.xlsx,NEST CORP - Nominal Accounts 06,Y,sage,sag_corp_nominal_account,parquet,,,,,,,account_cost_centre_code,Y,F,Y,,,2025-02-19 14:48:18.527,2025-02-19 14:48:53.903,,I,N,,Completed,N,static
+71,sage,sage_archive,landing,,NEST CORP - Nominal Budgets 060125.xlsx,,,,,,,Excel,,NEST CORP - Nominal Budgets 060125.xlsx,NEST CORP - Nominal Budgets 060,Y,sage,sag_corp_nominal_budget,parquet,,,,,,,account_number,Y,F,Y,,,2025-02-19 14:59:19.087,2025-02-19 14:59:53.400,,I,N,,Completed,N,static
+73,sage,sage_archive,landing,,NEST CORP - Nominal Departments 060125.xlsx,,,,,,,Excel,,NEST CORP - Nominal Departments 060125.xlsx,NEST CORP - Nominal Departments,Y,sage,sag_corp_nominal_department,parquet,,,,,,,department_code,Y,F,Y,,,2025-02-19 15:00:45.227,2025-02-19 15:01:29.790,,I,N,,Completed,N,static
+74,sage,sage_archive,landing,,NEST CORP - Nominal Report Categories 060125.xlsx,,,,,,,Excel,,NEST CORP - Nominal Report Categories 060125.xlsx,NEST CORP - Nominal Report Cate,Y,sage,sag_corp_nominal_report_category,parquet,,,,,,,type,Y,F,Y,,,2025-02-19 15:13:44.413,2025-02-19 15:14:21.757,,I,N,,Completed,N,static
+75,sage,sage_archive,landing,,NEST CORP - Nominal Transactions 060125 v2.xlsx,,,,,,,Excel,,NEST CORP - Nominal Transactions 060125 v2.xlsx,NEST CORP - Nominal Transaction,Y,sage,sag_corp_nominal_transaction,parquet,,,,,,,reference,Y,F,Y,,,2025-02-19 15:23:00.690,2025-02-19 15:23:57.927,,I,N,,Completed,N,static
+76,sage,sage_archive,landing,,NEST CORP - Purchase Order Header 060125.xlsx,,,,,,,Excel,,NEST CORP - Purchase Order Header 060125.xlsx,NEST CORP - Purchase Order Head,Y,sage,sag_corp_purchase_order_header,parquet,,,,,,,pop_order_return_id,Y,F,Y,,,2025-02-21 10:26:24.433,2025-02-21 10:27:05.463,,I,N,,Completed,N,static
+77,sage,sage_archive,landing,,NEST CORP - Purchase Order Invoiced Lines 060125 v2.xlsx,,,,,,,Excel,,NEST CORP - Purchase Order Invoiced Lines 060125 v2.xlsx,NEST CORP - Purchase Order Invo,Y,sage,sag_corp_purchase_order_invoiced_line,parquet,,,,,,,invoice_number,Y,F,Y,,,2025-03-19 10:20:50.153,2025-03-19 10:21:47.760,,I,N,,Completed,N,static
+78,sage,sage_archive,landing,,NEST CORP - Purchase Order Lines 060125 v2.xlsx,,,,,,,Excel,,NEST CORP - Purchase Order Lines 060125 v2.xlsx,Sheet1,Y,sage,sag_corp_purchase_order_line,parquet,,,,,,,pop_order_return_line_id,Y,F,Y,,,2025-02-25 15:12:49.590,2025-02-25 15:15:32.483,,I,N,,Completed,N,static
+79,sage,sage_archive,landing,,NEST CORP - Sicon Audit Log 060125.xlsx,,,,,,,Excel,,NEST CORP - Sicon Audit Log 060125.xlsx,NEST CORP - Sicon Audit Log 060,Y,sage,sag_corp_sicon_audit,parquet,,,,,,,audit_id,Y,F,Y,,,2025-03-24 14:28:14.533,2025-03-24 14:31:10.877,,I,N,,Completed,N,static
+80,sage,sage_archive,landing,,NEST CORP - Sicon Fixed Assets 060125 v2.xlsx,,,,,,,Excel,,NEST CORP - Sicon Fixed Assets 060125 v2.xlsx,NEST CORP - Sicon Fixed Assets,Y,sage,sag_corp_sicon_fixed_asset,parquet,,,,,,,code,Y,F,Y,,,2025-03-19 10:34:39.917,2025-03-19 10:35:18.930,,I,N,,Completed,N,static
+81,sage,sage_archive,landing,,NEST CORP - Supplier Accounts 060125.xlsx,,,,,,,Excel,,NEST CORP - Supplier Accounts 060125.xlsx,NEST CORP - Supplier Accounts 0,Y,sage,sag_corp_supplier_account,parquet,,,,,,,account_number,Y,F,Y,,,2025-02-21 14:20:33.943,2025-02-21 14:21:12.990,,I,N,,Completed,N,static
+82,sage,sage_archive,landing,,NEST CORP - Supplier Contacts 060125.xlsx,,,,,,,Excel,,NEST CORP - Supplier Contacts 060125.xlsx,NEST CORP - Supplier Contacts 0,Y,sage,sag_corp_supplier_contact,parquet,,,,,,,supplier_account_number,Y,F,Y,,,2025-02-21 14:30:22.347,2025-02-21 14:31:06.940,,I,N,,Completed,N,static
+83,sage,sage_archive,landing,,NEST CORP - Supplier Transactions 060125 v2.xlsx,,,,,,,Excel,,NEST CORP - Supplier Transactions 060125 v2.xlsx,NEST CORP - Supplier Transactio,Y,sage,sag_corp_supplier_transaction,parquet,,,,,,,urn,Y,F,Y,,,2025-02-21 16:02:03.090,2025-02-21 16:02:55.967,,I,N,,Completed,N,static
+84,sage,sage_archive,landing,,NEST CORP - System Audit Trail 060125.xlsx,,,,,,,Excel,,NEST CORP - System Audit Trail 060125.xlsx,NEST CORP - System Audit Trail,Y,sage,sag_corp_system_audit_trail,parquet,,,,,,,sys_audit_trail_id,Y,F,Y,,,2025-03-19 10:39:49.210,2025-03-19 10:40:49.603,,I,N,,Completed,N,static
+85,sage,sage_archive,landing,,WAP - Sicon Approvals Order Line By Approver 060125 v2.xlsx,,,,,,,Excel,,WAP - Sicon Approvals Order Lines By Approver 060125 v2.xlsx,WAP - Sicon Approvals Order Lin,Y,sage,sag_wap_sicon_approvals_order_line,parquet,,,,,,,supplier_id,Y,F,Y,,,2025-02-25 16:06:10.143,2025-02-25 16:09:19.820,,I,N,,Completed,N,static
+86,sage,sage_archive,landing,,WAP - Sicon Approvals History 060125 v2.xlsx,,,,,,,Excel,,WAP - Sicon Approvals History 060125 v2.xlsx,WAP - Sicon Approvals History 0,Y,sage,sag_wap_sicon_history,parquet,,,,,,,order_id,Y,F,Y,,,2025-03-19 10:41:49.837,2025-03-19 10:42:40.243,,I,N,,Completed,N,static
+87,sage,sage_archive,landing,,NEST SCHEME - System Audit Trail 060125 v2.xlsx,,,,,,,Excel,,NEST SCHEME - System Audit Trail 060125 v2.xlsx,NEST SCHEME - System Audit Trai,Y,sage,sag_scheme_audit_trail,parquet,,,,,,,sys_audit_trail_id,Y,F,Y,,,2025-03-19 11:01:01.130,2025-03-19 11:03:55.800,,I,N,,Completed,N,static
+88,sage,sage_archive,landing,,NEST SCHEME - Nominal Report Categories 060125 v2.xlsx,,,,,,,Excel,,NEST SCHEME - Nominal Report Categories 060125 v2.xlsx,NEST SCHEME - Nominal Report Ca,Y,sage,sag_scheme_nominal_report_category,parquet,,,,,,,code,Y,F,Y,,,2025-02-24 14:38:12.883,2025-02-24 14:39:38.790,,I,N,,Completed,N,static
+89,sage,sage_archive,landing,,NEST SCHEME - Nominal Transactions 060125 v2.xlsx,,,,,,,Excel,,NEST SCHEME - Nominal Transactions 060125 v2.xlsx,NEST SCHEME - Nominal Transacti,Y,sage,sag_scheme_nominal_transaction,parquet,,,,,,,nl_account,Y,F,Y,,,2025-02-24 15:02:53.607,2025-02-24 15:05:36.813,,I,N,,Completed,N,static
+91,sage,sage_archive,landing,,NEST SCHEME - Nominal Accounts 060125.xlsx,,,,,,,Excel,,NEST SCHEME - Nominal Accounts 060125.xlsx,NEST SCHEME - Nominal Accounts,Y,sage,sag_scheme_nominal_account,parquet,,,,,,,account_number,Y,F,Y,,,2025-03-19 11:21:03.970,2025-03-19 11:21:38.970,,I,N,,Completed,N,static
+92,sage,sage_archive,landing,,NEST SCHEME - Sicon Audit Log 060125.xlsx,,,,,,,Excel,,NEST SCHEME - Sicon Audit Log 060125.xlsx,NEST SCHEME - Sicon Audit Log 0,Y,sage,sag_scheme_sicon_audit_log,parquet,,,,,,,audit_id,Y,F,Y,,,2025-03-19 11:29:49.250,2025-03-19 11:30:27.733,,I,N,,Completed,N,static
+93,sage,sage_archive,landing,,NEST SCHEME - Nominal Budgets 060125.xlsx,,,,,,,Excel,,NEST SCHEME - Nominal Budgets 060125.xlsx,NEST SCHEME - Nominal Budgets 0,Y,sage,sag_scheme_nominal_budget,parquet,,,,,,,account_number,Y,F,Y,,,2025-03-19 11:47:24.573,2025-03-19 11:50:08.293,,I,N,,Completed,N,static
+94,sage,sage_archive,landing,,NEST SCHEME - Nominal Departments 060125.xlsx,,,,,,,Excel,,NEST SCHEME - Nominal Departments 060125.xlsx,NEST SCHEME - Nominal Departmen,Y,sage,sag_scheme_nominal_department,parquet,,,,,,,code,Y,F,Y,,,2025-02-24 15:16:13.433,2025-02-24 15:16:52.353,,I,N,,Completed,N,static
+125,infosec,infosec,landing,,swg_csoc_summary,,,,,,,Excel,,ExpoE/SWG Reports.xlsx,CSOC Summary,Y,infosec,ifs_swg_csoc_summary,parquet,,,,,,,"id,date,asset_type_vulnerability,scanned_asset,vulnerability_total,high,medium,low,under_analysis,exploitable,critical,p1,p2,p3,p4,patching_rag,category",Y,F,Y,,,2026-04-26 21:27:55.723,,,I,N,,Running,N,static
+126,infosec,infosec,landing,,swg_servicenow_incidents,,,,,,,Excel,,ExpoE/SWG Reports.xlsx,ServiceNow Incidents,Y,infosec,ifs_swg_servicenow_incidents,parquet,,,,,,,"id,date,p1_open_incident,p2_open_incident,p3_open_incident,p4_open_incident,status_open_or_on_hold,status_closed,impact_single_user,impact_multiple_users,impact_all_users,false_positives,category",Y,F,Y,,,2026-03-31 13:19:36.317,,,I,N,,Running,N,static
+127,infosec,infosec,landing,,swg_pentest_status,,,,,,,Excel,,ExpoE/SWG Reports.xlsx,PenTest,Y,infosec,ifs_swg_pentest_status,parquet,,,,,,,"id,date,issue_reference_status,priority,source,vulnerability,cvs_score,forecast_completion_date,steps_taken,date_opened,category",Y,F,Y,,,2026-03-31 13:19:29.343,,,I,N,,Running,N,static
+128,infosec,infosec,landing,,swg_project_change,,,,,,,Excel,,ExpoE/SWG Reports.xlsx,Project Change,Y,infosec,ifs_swg_project_change,parquet,,,,,,,"id,date,project_name,process_date,stage,estimated_completion_date,completion_date,notes,category",Y,F,Y,,,2026-03-31 13:19:29.167,,,I,N,,Running,N,static
+129,infosec,infosec,landing,,swg_access_review,,,,,,,Excel,,ExpoE/SWG Reports.xlsx,Access Review,Y,infosec,ifs_swg_access_review,parquet,,,,,,,"id,date,metric,total,comment,category",Y,F,Y,,,2026-03-31 13:19:29.197,2026-03-31 13:22:35.267,,I,N,,Completed,N,static
+130,infosec,infosec,landing,,swg_incident_management_response,,,,,,,Excel,,ExpoE/SWG Reports.xlsx,Incident Management & Response,Y,infosec,ifs_swg_incident_management_response,parquet,,,,,,,"id,date,incident_type,total,notes,category",Y,F,Y,,,2026-03-31 13:19:29.163,,,I,N,,Running,N,static
+131,infosec,infosec,landing,,swg_admin_accounts,,,,,,,Excel,,ExpoE/SWG Reports.xlsx,Admin Accounts,Y,infosec,ifs_swg_admin_accounts,parquet,,,,,,,"id,date,name,role,description,category",Y,F,Y,,,2026-03-31 13:19:29.593,,,I,N,,Running,N,static
+132,infosec,infosec,landing,,swg_incident_dp,,,,,,,Excel,,ExpoE/SWG Reports.xlsx,Incident Data Protection,Y,infosec,ifs_swg_incident_dp,parquet,,,,,,,"id,date,contract_reference,metric,total,summary,description,category",Y,F,Y,,,2026-03-31 13:19:30.457,,,I,N,,Running,N,static
+133,infosec,infosec,landing,,swg_general_metrics,,,,,,,Excel,,ExpoE/SWG Reports.xlsx,General Metrics,Y,infosec,ifs_swg_general_metrics,parquet,,,,,,,"id,date,contract_reference,metric,total,description,category",Y,F,Y,,,2026-03-31 13:21:34.560,,,I,N,,Running,N,static
+134,infosec,infosec,landing,,cap_network_data,,,,,,,Excel,,ExpoE/Capacity Reports.xlsx,Network Data,Y,infosec,ifs_cap_network_data,parquet,,,,,,,"id,date,bandwidth_type,data_movement,summary,status,category",Y,F,Y,,,2026-03-31 13:21:59.680,2026-03-31 13:22:45.157,,I,N,,Completed,N,static
+135,infosec,infosec,landing,,cap_certificate_license_summary,,,,,,,Excel,,ExpoE/Capacity Reports.xlsx,Certificate & License Summary,Y,infosec,ifs_cap_certificate_license_summary,parquet,,,,,,,"id,date,name,total,total_expired,renewals_in_progress,comments,notes,category_1,category_2",Y,F,Y,,,2026-03-31 13:21:38.583,2026-03-31 13:22:35.267,,I,N,,Completed,N,static
+136,infosec,infosec,landing,,cap_device_compliance_summary,,,,,,,Excel,,ExpoE/Capacity Reports.xlsx,Device Compliance Summary,Y,infosec,ifs_cap_device_compliance_summary,parquet,,,,,,,"id,date,total_devices,compliant,non_compliant,grace_period,non_compliant_not_evaluated,category",Y,F,Y,,,2026-03-31 13:22:00.663,2026-03-31 13:22:43.017,,I,N,,Completed,N,static
+137,infosec,infosec,landing,,cap_printing_summary,,,,,,,Excel,,ExpoE/Capacity Reports.xlsx,Printing Summary,Y,infosec,ifs_cap_printing_summary,parquet,,,,,,,"id,date,user,department,color_pages,grayscale_pages,duplex_pages,simplex_pages,total_printed_pages,jobs,average_pages,category",Y,F,Y,,,2026-03-31 13:22:45.723,2026-03-31 13:23:32.170,,I,N,,Completed,N,static
+138,infosec,infosec,landing,,cap_non_compliant_devices,,,,,,,Excel,,ExpoE/Capacity Reports.xlsx,Non Compliant Devices,Y,infosec,ifs_cap_non_compliant_devices,parquet,,,,,,,"id,date,device_name,upn,compliance_state,os,os_version,category",Y,F,Y,,,2026-03-31 13:21:52.030,2026-03-31 13:22:35.267,,I,N,,Completed,N,static
+140,infosec,infosec,landing,,snow_incident_cases,,,,,,,Excel,,ServiceNow/Service Now Incident Cases.xlsm,Master,Y,infosec,ifs_snow_incident_cases,parquet,,,,,,,id,Y,F,Y,,,2026-03-31 13:21:47.353,2026-03-31 13:22:35.267,,I,N,,Completed,N,static
+142,infosec,infosec,landing,,swg_incident_access_control,,,,,,,Excel,,ExpoE/SWG Reports.xlsx,Incident Access Control,Y,infosec,ifs_swg_incident_access_control,parquet,,,,,,,"id,date,contract_reference,metric,total,description,category1,category2,category3",Y,F,Y,,,2026-03-31 13:21:20.983,,,I,N,,Running,N,static
+144,infosec,infosec,landing,,avault_external_country,,,,,,,csv,*/External Country,*.csv,,Y,infosec,ifs_avault_external_country,parquet,,,,,,,"event_name,time_created,time_created_iso_8601,time_received,time_received_iso_8601,source_asset,destination_asset,username,source_country,destination_country",Y,F,Y,,,2026-03-31 13:22:24.643,2026-03-31 13:23:04.090,,I,Y,,Completed,N,pattern
+145,infosec,infosec,landing,,avault_admin_activity,,,,,,,csv,*/Admin Activity,*.csv,,Y,infosec,ifs_avault_admin_activity,parquet,,,,,,,"intent,strategy,method,time_received,time_received_iso_8601,time_created,time_created_iso_8601,priority,alarm_status,sources,destinations,username,destination_username,sharepoint_location,customer_header,customer_field",Y,F,Y,,,2026-03-31 13:22:53.363,2026-03-31 13:24:10.407,,I,Y,,Completed,N,pattern
+146,infosec,infosec,landing,,avault_dlp_deletion,,,,,,,csv,*/DLP,*.csv,,Y,infosec,ifs_avault_dlp_deletion,parquet,,,,,,,"intent,strategy,method,time_received,time_received_iso_8601,time_created,time_created_iso_8601,event_name,priority,alarm_status,sensor,incident_id,http_request_url",Y,F,Y,,,2026-03-31 13:22:44.857,2026-03-31 13:23:28.027,,I,Y,,Completed,N,pattern
+147,infosec,infosec,landing,,avault_forcepoint_blocks,,,,,,,csv,*/ForcePoint,*.csv,,Y,infosec,ifs_avault_forcepoint_blocks,parquet,,,,,,,"event_name,time_created,time_created_iso_8601,time_received,time_received_iso_8601,source_asset,destination_asset,username,reference_url",Y,F,Y,,,2026-03-31 13:22:50.767,2026-03-31 13:24:19.877,,I,Y,,Completed,N,pattern
+148,infosec,infosec,landing,,azdef_ooh_logons,,,,,,,csv,Azure Defender,*.csv,,Y,infosec,ifs_azdef_ooh_logons,parquet,,,,,,,"timestamp,device_name,account_name,logon_type,remote_ip,remote_device_name,initiating_process_account_name,logon_hour,logon_minute,day_number",Y,F,Y,,,2026-03-31 13:23:41.463,2026-03-31 13:24:20.907,,I,Y,,Completed,N,pattern
+149,infosec,infosec,landing,,print_summary_user,,,,,,,Excel,Print Summary,*.xlsx,Sheet1,Y,infosec,ifs_print_summary_user,parquet,,,,,,,"full_name,department,color_pages,grayscale_pages,duplex_pages,simplex_pages,total_printed_pages,number_of_jobs,avg_pages",Y,F,Y,,,2026-03-31 13:22:43.147,,,I,Y,,Running,N,pattern
+152,murat_dev,poc_test,landing,,poc_employee,,,,,,,csv,,poc_employee.csv,,Y,poc_test,poc_employee,parquet,,,,,,,employee_id,Y,F,Y,,,2025-10-15 12:19:57.927,2025-10-15 12:21:30.483,,F,Y,,Completed,N,pattern
+153,murat_dev,poc_test,landing,,poc_address,,,,,,,csv,,poc_address.csv,,Y,poc_test,poc_address,parquet,,,,,,,address_id,Y,F,Y,,,2025-10-15 12:23:00.977,2025-10-15 12:23:41.813,,F,Y,,Completed,N,pattern
+154,facility,facility,landing,,employee_train_booking_DD.MM.YY.hh.mm.csv,,,,,,,Excel,,Facilities Data NDP.xlsm,employee_train_booking,Y,facility,fcs_employee_train_booking,parquet,,,,,,,"booking_reference,booking_type,departure_date,start_country,start_city,end_city,end_country,return_date,ticket_type,defra_carbon_category,route_type,return_distance_km,distance_one_way_km,kg_co2_equivalent,total_spend_gbp,route_taken",Y,F,Y,,,2026-04-01 16:44:35.447,2026-04-01 16:46:36.450,,F,Y,,Completed,N,pattern
+155,facility,facility,landing,,employee_flight_booking_DD.MM.YY.hh.mm.csv,,,,,,,Excel,,Facilities Data NDP.xlsm,employee_flight_booking,Y,facility,fcs_employee_flight_booking,parquet,,,,,,,"booking_reference,booking_type,departure_date,start_country,start_city,end_city,end_country,return_date,ticket_type,defra_carbon_category,route_type,return_distance_km,distance_one_way_km,kg_co2_equivalent,total_spend_gbp,route_taken",Y,F,Y,,,2026-04-01 16:44:43.590,2026-04-01 16:46:37.473,,I,Y,,Completed,N,pattern
+156,facility,facility,landing,,office_building_metric_DD.MM.YY.hh.mm.csv,,,,,,,Excel,,Facilities Data NDP.xlsm,office_building_metric,Y,facility,fcs_office_building_metrics,parquet,,,,,,,"quarter,nest_area_percentage,electricity_kwh,electricity_tco2e,water_m3,recycled_waste_tonnes,energy_from_waste_tonnes,food_waste_tonnes",Y,F,Y,,,2026-04-01 16:44:35.453,2026-04-01 16:46:04.933,,I,Y,,Completed,N,pattern
+157,facility,facility,landing,,coffee_machine_usage_DD.MM.YY.hh.mm.csv,,,,,,,Excel,,Facilities Data NDP.xlsm,coffee_machine_usage,Y,facility,fcs_coffee_machine_usage,parquet,,,,,,,"date,hub_kitchen_count,hub_kitchen_used,inv_kitchen_count,inv_kitchen_used",Y,F,Y,,,2026-04-01 16:44:35.230,2026-04-01 16:46:03.870,,I,Y,,Completed,N,pattern
+158,facility,facility,landing,,jll_office_maintenance_DD.MM.YY.hh.mm.csv,,,,,,,Excel,,Facilities Data NDP.xlsm,jll_office_maintenance,Y,facility,fcs_jll_office_maintenance,parquet,,,,,,,"help_desk_informed_date,issue_type,issue_detail,issue_location,employee_logged_by,contractor_to_attend,floor_plan_location_area,help_desk_responded_date,help_desk_responded_time,jll_reference_number,target_completion_date",Y,F,Y,,,2026-04-01 16:44:35.583,2026-04-01 16:46:19.457,,I,Y,,Completed,N,pattern
+159,facility,facility,landing,,visitor_secuirty_breach_DD.MM.YY.hh.mm.csv,,,,,,,Excel,,Facilities Data NDP.xlsm,visitor_security_breach,Y,facility,fcs_visitor_secuirty_breach,parquet,,,,,,,"breach_date,staff_name,emailed_date,notes",Y,F,Y,,,2026-04-01 16:44:35.623,2026-04-01 16:46:26.920,,I,Y,,Completed,N,pattern
+160,facility,facility,landing,,shared_room_breach_DD.MM.YY.hh.mm.csv,,,,,,,Excel,,Facilities Data NDP.xlsm,shared_room_breach,Y,facility,fcs_shared_room_breach,parquet,,,,,,,"room_booking_date,employee_name,employee_email,room_number,employee_department,start_time,finish_time,booking_status,report_received_date,emailed_by_facilties_date",Y,F,Y,,,2026-04-01 16:44:35.507,2026-04-01 16:46:35.337,,I,Y,,Completed,N,pattern
+161,facility,facility,landing,,office_building_inspection_DD.MM.YY.hh.mm.csv,,,,,,,Excel,,Facilities Data NDP.xlsm,office_building_inspection,Y,facility,fcs_office_building_inspection,parquet,,,,,,,"inspection_month,inspection_year,inspection_item,inspection_number,location_reference,floor_plan_location,location_zone,reported_issue_reference,completion_status,issue",Y,F,Y,,,2026-04-01 16:44:35.653,2026-04-01 16:46:23.687,,I,Y,,Completed,N,pattern
+162,facility,facility,landing,,eyecare_examination_voucher_DD.MM.YY.hh.mm.csv,,,,,,,Excel,,Facilities Data NDP.xlsm,eyecare_examination_voucher,Y,facility,fcs_eyecare_examination_voucher,parquet,,,,,,,"eye_exam_voucher_number,purchase_date,value_gbp,voucher_type,expiry_date,employee_name,issue_date,issue_format",Y,F,Y,,,2026-04-01 16:46:45.133,2026-04-01 16:47:22.823,,I,Y,,Completed,N,pattern
+163,facility,facility,landing,,eyecare_spectacle_voucher_DD.MM.YY.hh.mm.csv,,,,,,,Excel,,Facilities Data NDP.xlsm,eyecare_spectacle_voucher,Y,facility,fcs_eyecare_spectacle_voucher,parquet,,,,,,,"spectacle_voucher_number,purchase_date,value_gbp,voucher_type,expiry_date,employee_name,issue_date,issue_format",Y,F,Y,,,2026-04-01 16:46:45.207,2026-04-01 16:47:28.050,,I,Y,,Completed,N,pattern
+164,facility,facility,landing,,employee_driven_vehicle_DD.MM.YY.hh.mm.csv,,,,,,,Excel,,Facilities Data NDP.xlsm,employee_driven_vehicle,Y,facility,fcs_employee_driven_vehicle,parquet,,,,,,,"driver_name,vehicle_registration,vehicle_make,vehicle_model,vehicle_engine_litres,vehicle_fuel_type,vehicle_co2_emission,journey_miles,journey_km,drive_date",Y,F,Y,,,2026-04-01 16:46:12.630,2026-04-01 16:46:55.047,,I,Y,,Completed,N,pattern
+165,prod,xledger,landing,,purchaseOrderLinks,1,"first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+ownerSet: LOWER","first: {{SourceQueryPageSize}}
+after: \""{{cursor_offset}}\""
+filter: { AND: [
+                { {{watermarkColumn}}_gt: \""{{from}}\"" }
+                { {{watermarkColumn}}_lt: \""{{to}}\""   }
+               ]
+        }","dbId
+ownerDbId
+amount
+createdAt
+reconciled
+quantity
+closed
+poTransaction {
+  dbId
+  name
+  code
+}
+purchaseOrder {
+  amount
+  contract
+  approvedAt
+  dbId
+  description
+  orderNumber
+  ownerDbId
+  posted
+}
+transactionHeader {
+  dbId
+  transactionSource {
+    dbId
+  }
+}",5000,,,,,,,corp,xlg_purchase_order_link,parquet,$['data']['purchaseOrderLinks'],,,,,,purchase_order_link_dbid,Y,I,Y,modifiedAt,2026-02-24T08:08:55,2026-02-24 08:07:10.007,2026-02-24 08:11:24.280,,I,N,,Completed,N,
