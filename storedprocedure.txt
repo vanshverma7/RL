@@ -1,0 +1,578 @@
+/****** Object:  StoredProcedure [metahub].[usp_get_ingestion_config]    Script Date: 16/06/2026 19:23:04 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER   PROCEDURE [metahub].[usp_get_ingestion_config]
+    @SourceSystem       NVARCHAR(100) = NULL,
+    @BatchName          NVARCHAR(100) = NULL,
+    @SourceTableName    NVARCHAR(100) = NULL,
+    @TargetTableName    NVARCHAR(100) = NULL,
+    @Enabled            CHAR(1) = 'Y',
+    @Debug              BIT = 0
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SET XACT_ABORT ON;
+
+    BEGIN TRY
+
+        IF @Debug = 1 PRINT '1) Starting metahub.usp_get_ingestion_config (v6)';
+
+        DECLARE @IsActive BIT = CASE WHEN @Enabled = 'Y' THEN 1 ELSE 0 END;
+        DECLARE @SelectedCount INT = 0;
+
+        -- ---------------------------------------------------------------
+        -- Step 1: Qualifying datasets
+        -- ---------------------------------------------------------------
+        CREATE TABLE #QualifyingDatasets (dataset_id INT NOT NULL);
+
+        INSERT INTO #QualifyingDatasets (dataset_id)
+        SELECT ds.dataset_id
+        FROM metahub.catalog_dataset ds
+                 INNER JOIN metahub.master_system src_sys
+                            ON ds.source_system_id = src_sys.source_system_id
+        WHERE ds.is_active = @IsActive
+          AND ISNULL(src_sys.system_name, '')   = COALESCE(@SourceSystem, src_sys.system_name, '')
+          AND ISNULL(ds.source_entity_name, '') = COALESCE(@SourceTableName, ds.source_entity_name, '')
+          AND ISNULL(ds.dataset_name, '')       = COALESCE(@TargetTableName, ds.dataset_name, '')
+          AND ISNULL(ds.batch_group, '')        = COALESCE(@BatchName, ds.batch_group, '');
+
+        IF @Debug = 1
+            PRINT '2) Qualifying datasets: ' + CAST(@@ROWCOUNT AS VARCHAR(10));
+
+        -- ---------------------------------------------------------------
+        -- Step 2: TabularTranslator JSON (PATH-BASED format)
+        -- Only for datasets with catalog_column entries with source_expression
+        -- ---------------------------------------------------------------
+        CREATE TABLE #Translator (
+                                     dataset_id INT NOT NULL,
+                                     TabularTranslatorObject NVARCHAR(MAX) NULL
+        );
+
+        INSERT INTO #Translator (dataset_id, TabularTranslatorObject)
+        SELECT
+            cc.dataset_id,
+            CAST('{"type":"TabularTranslator","mappings":[' AS NVARCHAR(MAX)) +
+            STRING_AGG(
+                    CAST(
+                            '{"source":{"path":"' + cc.source_expression + '"},' +
+                            '"sink":{"name":"' + cc.column_name + '","type":"' +
+                            CASE
+                                WHEN cc.data_type_name IN ('INT64','BIGINT') THEN 'Int64'
+                                WHEN cc.data_type_name IN ('INT','INT32') THEN 'Int32'
+                                WHEN cc.data_type_name IN ('FLOAT','DOUBLE') THEN 'Double'
+                                WHEN cc.data_type_name LIKE 'DECIMAL%' THEN 'Decimal'
+                                WHEN cc.data_type_name = 'BOOLEAN' THEN 'Boolean'
+                                WHEN cc.data_type_name = 'DATE' THEN 'Date","dateTimeFormat":"yyyy-MM-dd'
+                                WHEN cc.data_type_name IN ('TIMESTAMP','DATETIME') THEN 'DateTimeOffset'
+                                ELSE 'String'
+                                END +
+                            '"}}'
+                        AS NVARCHAR(MAX)),
+                    ','
+            ) WITHIN GROUP (ORDER BY cc.column_position) +
+            '],' +
+            '"collectionReference":"' +
+            ISNULL(ep_ref.collection_ref, '') +
+            '",' +
+            '"mapComplexValuesToString":false}'
+        FROM metahub.catalog_column cc
+                 INNER JOIN (
+            SELECT ds.dataset_id,
+                   ISNULL(ep.response_root_path, '') + ISNULL(tmpl.json_collection_reference, '') AS collection_ref
+            FROM metahub.catalog_dataset ds
+                     INNER JOIN metahub.catalog_api_endpoint ep ON ds.dataset_id = ep.dataset_id AND ep.is_active = 1
+                     LEFT JOIN metahub.catalog_api_template tmpl ON ep.template_id = tmpl.template_id
+            WHERE ds.dataset_id IN (SELECT dataset_id FROM #QualifyingDatasets)
+        ) ep_ref ON cc.dataset_id = ep_ref.dataset_id
+        WHERE cc.dataset_id IN (SELECT dataset_id FROM #QualifyingDatasets)
+          AND cc.source_expression IS NOT NULL
+        GROUP BY cc.dataset_id, ep_ref.collection_ref;
+
+        IF @Debug = 1
+            PRINT '3) Translator JSON built for ' + CAST(@@ROWCOUNT AS VARCHAR(10)) + ' datasets';
+
+        -- ---------------------------------------------------------------
+        -- Step 3: Connection lookups (UPDATED: typed auth/rate columns)
+        -- ---------------------------------------------------------------
+        CREATE TABLE #SourceConn (
+                                     system_id               INT NOT NULL,
+                                     connection_type_id      INT NULL,
+                                     api_base_url            NVARCHAR(500) NULL,
+                                     keyvault_secret_name    NVARCHAR(255) NULL,
+            -- Auth (typed columns — no more JSON)
+                                     auth_type               NVARCHAR(50) NULL,
+                                     auth_token_header       NVARCHAR(100) NULL,
+                                     auth_token_prefix       NVARCHAR(50) NULL,
+                                     auth_token_source       NVARCHAR(50) NULL,
+                                     auth_token_secret_name  NVARCHAR(200) NULL,
+                                     auth_client_id_secret_name  NVARCHAR(200) NULL,
+                                     auth_client_secret_name NVARCHAR(200) NULL,
+                                     auth_token_url          NVARCHAR(500) NULL,
+                                     auth_scope              NVARCHAR(500) NULL,
+                                     auth_grant_type         NVARCHAR(50) NULL,
+                                     auth_authority          NVARCHAR(500) NULL,
+                                     auth_param_name         NVARCHAR(100) NULL,
+                                     auth_param_location     NVARCHAR(20) NULL,
+            -- Rate limits (typed columns — no more JSON)
+                                     rate_requests_per_minute INT NULL,
+                                     rate_requests_per_second INT NULL,
+                                     rate_backoff_strategy   NVARCHAR(20) NULL,
+                                     rate_retry_count        INT NULL,
+                                     rate_daily_limit        INT NULL,
+            -- Headers (stays JSON — variable keys per API)
+                                     default_headers         NVARCHAR(MAX) NULL,
+            -- Legacy secret fields
+                                     secret_scope            NVARCHAR(255) NULL,
+                                     secret_key_username     NVARCHAR(255) NULL,
+                                     secret_key_password     NVARCHAR(255) NULL
+        );
+
+        INSERT INTO #SourceConn (
+            system_id, connection_type_id, api_base_url, keyvault_secret_name,
+            auth_type, auth_token_header, auth_token_prefix, auth_token_source,
+            auth_token_secret_name, auth_client_id_secret_name, auth_client_secret_name,
+            auth_token_url, auth_scope, auth_grant_type, auth_authority,
+            auth_param_name, auth_param_location,
+            rate_requests_per_minute, rate_requests_per_second,
+            rate_backoff_strategy, rate_retry_count, rate_daily_limit,
+            default_headers,
+            secret_scope, secret_key_username, secret_key_password
+        )
+        SELECT
+            c.system_id,
+            MAX(c.connection_type_id),
+            MAX(c.api_base_url),
+            MAX(c.keyvault_secret_name),
+            MAX(c.auth_type),
+            MAX(c.auth_token_header),
+            MAX(c.auth_token_prefix),
+            MAX(c.auth_token_source),
+            MAX(c.auth_token_secret_name),
+            MAX(c.auth_client_id_secret_name),
+            MAX(c.auth_client_secret_name),
+            MAX(c.auth_token_url),
+            MAX(c.auth_scope),
+            MAX(c.auth_grant_type),
+            MAX(c.auth_authority),
+            MAX(c.auth_param_name),
+            MAX(c.auth_param_location),
+            MAX(c.rate_requests_per_minute),
+            MAX(c.rate_requests_per_second),
+            MAX(c.rate_backoff_strategy),
+            MAX(c.rate_retry_count),
+            MAX(c.rate_daily_limit),
+            MAX(c.default_headers),
+            MAX(c.secret_scope),
+            MAX(c.secret_key_username),
+            MAX(c.secret_key_password)
+        FROM metahub.catalog_connection c
+        WHERE c.system_id IS NOT NULL AND c.is_active = 1
+        GROUP BY c.system_id;
+
+        CREATE TABLE #TargetConn (
+                                     system_id INT NOT NULL,
+                                     storage_account NVARCHAR(255) NULL,
+                                     container_name NVARCHAR(255) NULL
+        );
+
+        INSERT INTO #TargetConn (system_id, storage_account, container_name)
+        SELECT c.system_id, MAX(c.storage_account), MAX(c.container_name)
+        FROM metahub.catalog_connection c
+        WHERE c.system_id IS NOT NULL AND c.is_active = 1
+        GROUP BY c.system_id;
+
+        -- ---------------------------------------------------------------
+        -- Step 4: Main SELECT
+        -- ---------------------------------------------------------------
+        IF @Debug = 1 PRINT '4) Executing main select.';
+
+        ;WITH Config AS (
+            SELECT
+                ds.dataset_id,
+                ds.batch_group,
+                ds.source_entity_name,
+                ds.dataset_name,
+                ds.target_format,
+                ds.target_path,                  -- *** ADDED: carry target_path through CTE ***
+                ds.business_key_columns,
+                ds.is_active,
+                ds.is_initial_load_required,
+                ds.is_truncate_on_full_load,
+                ds.load_type_id,
+                ds.source_system_id,
+                ds.target_system_id,
+                src_sys.system_name     AS source_system_name,
+                src_sys.system_code     AS source_system_code,
+                ISNULL(tgt_sys.system_name, '') AS target_system_name,
+
+                -- Connection type: prefer connection-level, fallback to template-level
+                COALESCE(
+                        conn_ct.type_code,
+                        tmpl_ct.type_code,
+                        'unknown'
+                ) AS connection_type,
+
+                -- Endpoint config
+                ep.endpoint_path,
+                ISNULL(ep.http_method, 'GET')    AS http_method,
+                ep.request_headers,
+                ep.page_size,
+                ep.incremental_field,
+                ISNULL(ep.incremental_strategy, 'full') AS incremental_strategy,
+                ep.response_root_path,
+                ep.fields_selection              AS SourceQueryTemplateColumns,
+
+                -- Translator
+                tr.TabularTranslatorObject,
+
+                -- Connection: base
+                sc.api_base_url,
+                sc.keyvault_secret_name,
+                sc.default_headers               AS connection_default_headers,
+
+                -- Connection: auth (typed columns)
+                sc.auth_type,
+                sc.auth_token_header,
+                sc.auth_token_prefix,
+                sc.auth_token_source,
+                sc.auth_token_secret_name,
+                sc.auth_client_id_secret_name,
+                sc.auth_client_secret_name,
+                sc.auth_token_url,
+                sc.auth_scope,
+                sc.auth_grant_type,
+                sc.auth_authority,
+                sc.auth_param_name,
+                sc.auth_param_location,
+
+                -- Connection: rate limits (typed columns)
+                sc.rate_requests_per_minute,
+                sc.rate_requests_per_second,
+                sc.rate_backoff_strategy,
+                sc.rate_retry_count,
+                sc.rate_daily_limit,
+
+                -- Connection: legacy secrets
+                sc.secret_scope,
+                sc.secret_key_username,
+                sc.secret_key_password,
+
+                -- Target
+                tc.storage_account,
+                tc.container_name,
+
+                -- Load type
+                lt.load_type_code,
+
+                -- Template (may be NULL for non-GraphQL)
+                tmpl.template_code,
+                tmpl.query_data_template,
+                tmpl.query_metadata_template,
+                tmpl.json_collection_reference,
+                tmpl.json_page_info_reference,
+                tmpl.json_page_info_attribute,
+                tmpl.page_navigation_column,
+                tmpl.page_navigation_initial_value,
+
+                -- API config overrides
+                JSON_VALUE(ep.api_config, '$.query_args_full')        AS query_args_full,
+                JSON_VALUE(ep.api_config, '$.query_args_incremental') AS query_args_incremental,
+
+                -- Last successful execution
+                last_run.watermark_end                                AS last_watermark,
+                last_run.execution_end                                AS last_run_end,
+                last_run.status                                       AS last_run_status,
+                last_run.rows_written                                 AS last_rows_written
+
+            FROM metahub.catalog_dataset AS ds
+                     INNER JOIN #QualifyingDatasets AS qd ON ds.dataset_id = qd.dataset_id
+                     INNER JOIN metahub.catalog_api_endpoint AS ep
+                                ON ds.dataset_id = ep.dataset_id AND ep.is_active = 1
+                     LEFT JOIN metahub.catalog_api_template AS tmpl
+                               ON ep.template_id = tmpl.template_id
+                -- Connection type from template (backward compat)
+                     LEFT JOIN metahub.master_connection_type AS tmpl_ct
+                               ON tmpl.connection_type_id = tmpl_ct.connection_type_id
+                -- Connection type from connection (primary — new path)
+                     LEFT JOIN #SourceConn AS sc ON sc.system_id = ds.source_system_id
+                     LEFT JOIN metahub.master_connection_type AS conn_ct
+                               ON sc.connection_type_id = conn_ct.connection_type_id
+                     INNER JOIN metahub.master_system AS src_sys
+                                ON ds.source_system_id = src_sys.source_system_id
+                     LEFT JOIN metahub.master_system AS tgt_sys
+                               ON ds.target_system_id = tgt_sys.source_system_id
+                     LEFT JOIN metahub.master_load_type AS lt
+                               ON ds.load_type_id = lt.load_type_id
+                     LEFT JOIN #TargetConn AS tc ON tc.system_id = ds.target_system_id
+                     LEFT JOIN #Translator AS tr ON ds.dataset_id = tr.dataset_id
+                     LEFT JOIN (
+                SELECT dataset_id, watermark_end, execution_end, status, rows_written,
+                       ROW_NUMBER() OVER (PARTITION BY dataset_id ORDER BY execution_end DESC) AS rn
+                FROM metahub.catalog_execution_log
+                WHERE status = N'Completed'
+            ) last_run ON last_run.dataset_id = ds.dataset_id AND last_run.rn = 1
+        )
+         SELECT
+             -- ============================================================
+             -- ROUTING
+             -- ============================================================
+             CFG.connection_type                                      AS IngestionPattern,
+             CFG.incremental_strategy                                 AS IncrementalStrategy,
+
+             -- ============================================================
+             -- IDENTITY
+             -- ============================================================
+             CFG.dataset_id                                           AS ConfigStagingID,
+             CFG.batch_group                                          AS BatchName,
+             CFG.source_system_name                                   AS SourceSystem,
+             CFG.source_system_code                                   AS SourceSystemCode,
+             CAST(NULL AS NVARCHAR(255))                              AS SourceTableSchema,
+             CFG.source_entity_name                                   AS SourceTableName,
+
+             -- ============================================================
+             -- HTTP / API CONFIG
+             -- ============================================================
+             CFG.http_method                                          AS HttpMethod,
+             CFG.auth_type                                            AS AuthType,
+             CFG.endpoint_path                                        AS EndpointPath,
+
+             -- Merged headers: connection defaults + endpoint overrides
+             CASE
+                 WHEN CFG.request_headers IS NOT NULL AND CFG.connection_default_headers IS NOT NULL
+                     THEN CFG.connection_default_headers
+                 WHEN CFG.request_headers IS NOT NULL
+                     THEN CFG.request_headers
+                 ELSE CFG.connection_default_headers
+                 END                                                      AS RequestHeaders,
+
+             -- Full URL
+             CASE
+                 WHEN CFG.api_base_url IS NOT NULL AND CFG.endpoint_path IS NOT NULL AND CFG.endpoint_path <> ''
+                     THEN CFG.api_base_url + '/' + CFG.endpoint_path
+                 ELSE CFG.api_base_url
+                 END                                                      AS FullEndpointURL,
+
+             -- ============================================================
+             -- AUTH CONFIG (typed columns — NEW in v6)
+             -- ============================================================
+             CFG.auth_token_header                                    AS AuthTokenHeader,
+             CFG.auth_token_prefix                                    AS AuthTokenPrefix,
+             CFG.auth_token_source                                    AS AuthTokenSource,
+             CFG.auth_token_secret_name                               AS AuthTokenSecretName,
+             CFG.auth_client_id_secret_name                           AS AuthClientIdSecretName,
+             CFG.auth_client_secret_name                              AS AuthClientSecretName,
+             CFG.auth_token_url                                       AS AuthTokenURL,
+             CFG.auth_scope                                           AS AuthScope,
+             CFG.auth_grant_type                                      AS AuthGrantType,
+             CFG.auth_authority                                       AS AuthAuthority,
+             CFG.auth_param_name                                      AS AuthParamName,
+             CFG.auth_param_location                                  AS AuthParamLocation,
+
+             -- ============================================================
+             -- RATE LIMIT CONFIG (typed columns — NEW in v6)
+             -- ============================================================
+             CFG.rate_requests_per_minute                              AS RateRequestsPerMinute,
+             CFG.rate_requests_per_second                              AS RateRequestsPerSecond,
+             CFG.rate_backoff_strategy                                 AS RateBackoffStrategy,
+             CFG.rate_retry_Count                                      AS RateRetryCount,
+             CFG.rate_daily_limit                                      AS RateDailyLimit,
+
+             -- ============================================================
+             -- GRAPHQL-SPECIFIC (NULL for non-GraphQL patterns)
+             -- ============================================================
+             CFG.response_root_path                                   AS SourceJsonEntityReference,
+
+             CASE WHEN CFG.json_collection_reference IS NOT NULL
+                      THEN ISNULL(CFG.response_root_path, '') + CFG.json_collection_reference
+                  ELSE NULL
+                 END                                                      AS SourceJsonCollectionReference,
+
+             CASE WHEN CFG.json_page_info_reference IS NOT NULL
+                      THEN ISNULL(CFG.response_root_path, '') + CFG.json_page_info_reference
+                  ELSE NULL
+                 END                                                      AS SourceJsonPageInfoReference,
+
+             CFG.json_page_info_attribute                              AS SourceJsonPageInfoAttribute,
+             CFG.page_navigation_column                                AS SourceJsonPageNavigationAttribute,
+             CFG.page_navigation_initial_value                         AS SourceJsonPageNavigationAttributeInitialValue,
+
+             -- GraphQL Query Full
+             CASE WHEN CFG.query_data_template IS NOT NULL THEN
+                      REPLACE(
+                              REPLACE(
+                                      REPLACE(
+                                              REPLACE(
+                                                      REPLACE(
+                                                              CAST(CFG.query_data_template AS NVARCHAR(MAX)),
+                                                              '{{SourceTableName}}', CFG.source_entity_name
+                                                      ),
+                                                      '{{SourceQueryTemplateArguments}}',
+                                                      '  ' + REPLACE(ISNULL(CFG.query_args_full, ''), CHAR(10), CHAR(10) + '    ')
+                                              ),
+                                              '{{SourceQueryPageSize}}', CAST(ISNULL(CFG.page_size, 1000) AS NVARCHAR(10))
+                                      ),
+                                      '{{SourceQueryTemplateColumns}}',
+                                      '  ' + REPLACE(ISNULL(CAST(CFG.SourceQueryTemplateColumns AS NVARCHAR(MAX)), ''), CHAR(10), CHAR(10) + '          ')
+                              ),
+                              '{{cursor_offset}}', ISNULL(CFG.page_navigation_initial_value, '0')
+                      )
+                  ELSE NULL END                                            AS GraphQLQueryFull,
+
+             -- GraphQL Metadata Query Full
+             CASE WHEN CFG.query_metadata_template IS NOT NULL THEN
+                      REPLACE(
+                              REPLACE(
+                                      REPLACE(
+                                              REPLACE(
+                                                      CAST(CFG.query_metadata_template AS NVARCHAR(MAX)),
+                                                      '{{SourceTableName}}', CFG.source_entity_name
+                                              ),
+                                              '{{SourceQueryTemplateArguments}}',
+                                              '  ' + REPLACE(ISNULL(CFG.query_args_full, ''), CHAR(10), CHAR(10) + '    ')
+                                      ),
+                                      '{{SourceQueryPageSize}}', CAST(ISNULL(CFG.page_size, 1000) AS NVARCHAR(10))
+                              ),
+                              '{{cursor_offset}}', ISNULL(CFG.page_navigation_initial_value, '0')
+                      )
+                  ELSE NULL END                                            AS GraphQLMetadataQueryFull,
+
+             -- GraphQL Query Incremental
+             CASE WHEN CFG.query_data_template IS NOT NULL THEN
+                      REPLACE(
+                              REPLACE(
+                                      REPLACE(
+                                              REPLACE(
+                                                      REPLACE(
+                                                              REPLACE(
+                                                                      REPLACE(
+                                                                              CAST(CFG.query_data_template AS NVARCHAR(MAX)),
+                                                                              '{{SourceTableName}}', CFG.source_entity_name
+                                                                      ),
+                                                                      '{{SourceQueryTemplateArguments}}',
+                                                                      '  ' + REPLACE(ISNULL(CFG.query_args_incremental, CFG.query_args_full), CHAR(10), CHAR(10) + '    ')
+                                                              ),
+                                                              '{{SourceQueryPageSize}}', CAST(ISNULL(CFG.page_size, 1000) AS NVARCHAR(10))
+                                                      ),
+                                                      '{{watermarkColumn}}', ISNULL(CFG.incremental_field, '')
+                                              ),
+                                              '{{from}}', '1900-01-01T00:00:00'
+                                      ),
+                                      '{{SourceQueryTemplateColumns}}',
+                                      '  ' + REPLACE(ISNULL(CAST(CFG.SourceQueryTemplateColumns AS NVARCHAR(MAX)), ''), CHAR(10), CHAR(10) + '          ')
+                              ),
+                              '{{cursor_offset}}', ISNULL(CFG.page_navigation_initial_value, '0')
+                      )
+                  ELSE NULL END                                            AS GraphQLQueryIncremental,
+
+             -- GraphQL Metadata Query Incremental
+             CASE WHEN CFG.query_metadata_template IS NOT NULL THEN
+                      REPLACE(
+                              REPLACE(
+                                      REPLACE(
+                                              REPLACE(
+                                                      REPLACE(
+                                                              REPLACE(
+                                                                      CAST(CFG.query_metadata_template AS NVARCHAR(MAX)),
+                                                                      '{{SourceTableName}}', CFG.source_entity_name
+                                                              ),
+                                                              '{{SourceQueryTemplateArguments}}',
+                                                              '  ' + REPLACE(ISNULL(CFG.query_args_incremental, CFG.query_args_full), CHAR(10), CHAR(10) + '    ')
+                                                      ),
+                                                      '{{SourceQueryPageSize}}', CAST(ISNULL(CFG.page_size, 1000) AS NVARCHAR(10))
+                                              ),
+                                              '{{watermarkColumn}}', ISNULL(CFG.incremental_field, '')
+                                      ),
+                                      '{{from}}', '1900-01-01T00:00:00'
+                              ),
+                              '{{cursor_offset}}', ISNULL(CFG.page_navigation_initial_value, '0')
+                      )
+                  ELSE NULL END                                            AS GraphQLMetadataQueryIncremental,
+
+             -- ============================================================
+             -- TARGET CONFIG
+             -- ============================================================
+             CFG.target_system_name                                    AS TargetSystem,
+             'corp'                                                    AS TargetTableSchema,
+             CFG.dataset_name                                          AS TargetTableName,
+             CFG.target_format                                         AS TargetTableFormat,
+
+             CFG.TabularTranslatorObject,
+
+             -- ============================================================
+             -- LOAD BEHAVIOUR
+             -- ============================================================
+             CFG.business_key_columns                                  AS BusinessKey,
+             CASE WHEN CFG.is_active = 1 THEN 'Y' ELSE 'N' END       AS Enabled,
+             CASE
+                 WHEN CFG.load_type_code = 'full' THEN 'F'
+                 WHEN CFG.load_type_code = 'incremental' THEN 'I'
+                 WHEN CFG.incremental_strategy = 'full' THEN 'F'
+                 WHEN CFG.incremental_strategy IN ('watermark', 'cursor') THEN 'I'
+                 WHEN CFG.load_type_id = 1 THEN 'F'
+                 ELSE 'F'
+                 END                                                       AS LoadType,
+             CASE WHEN CFG.is_initial_load_required = 1 THEN 'Y' ELSE 'N' END
+                 AS InitialLoad,
+
+             -- ============================================================
+             -- CONNECTION / SECURITY
+             -- ============================================================
+             CFG.api_base_url                                          AS SourceURL,
+             CFG.storage_account                                       AS TargetStorageAccount,
+             CFG.container_name                                        AS TargetStorageContainer,
+             -- *** UPDATED: use target_path from metadata if set, fallback to auto-generated path ***
+             LOWER(ISNULL(CFG.target_path, CFG.source_system_name + '/' + 'corp' + '/' + CFG.dataset_name))
+                 AS TargetDirectory,
+
+             CFG.incremental_field                                     AS IncrementalColumn,
+             CASE
+                 WHEN CFG.incremental_strategy = 'full' THEN NULL
+                 WHEN CFG.last_watermark IS NOT NULL THEN CFG.last_watermark
+                 ELSE '1900-01-01T00:00:00'
+                 END                                                       AS Token,
+             CFG.last_run_end                                          AS LastRunEnd,
+             CFG.last_run_status                                       AS LastRunStatus,
+             CFG.last_rows_written                                     AS LastRowsWritten,
+             CASE WHEN CFG.is_truncate_on_full_load = 1 THEN 'Y' ELSE 'N' END
+                 AS TruncateBeforeLoad,
+             CFG.keyvault_secret_name                                  AS SourceKeyVaultSecret1,
+             CAST(NULL AS NVARCHAR(255))                               AS SourceKeyVaultSecret2,
+
+             -- Legacy secret references (backward compat)
+             CFG.secret_scope                                          AS SecretScope,
+             CFG.secret_key_username                                   AS SecretKeyUsername,
+             CFG.secret_key_password                                   AS SecretKeyPassword
+
+         FROM Config AS CFG;
+
+        SET @SelectedCount = @@ROWCOUNT;
+
+        IF @Debug = 1
+            PRINT '5) Completed. ' + CAST(@SelectedCount AS VARCHAR(10)) + ' rows selected.';
+
+        -- Clean up
+        DROP TABLE IF EXISTS #QualifyingDatasets;
+        DROP TABLE IF EXISTS #Translator;
+        DROP TABLE IF EXISTS #SourceConn;
+        DROP TABLE IF EXISTS #TargetConn;
+
+        RETURN 0;
+
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrMsg NVARCHAR(4000) = ERROR_MESSAGE();
+        DECLARE @ErrSev INT = ERROR_SEVERITY();
+        DECLARE @ErrState INT = ERROR_STATE();
+        IF @Debug = 1 PRINT 'ERROR: ' + @ErrMsg;
+
+        DROP TABLE IF EXISTS #QualifyingDatasets;
+        DROP TABLE IF EXISTS #Translator;
+        DROP TABLE IF EXISTS #SourceConn;
+        DROP TABLE IF EXISTS #TargetConn;
+
+        RAISERROR(@ErrMsg, @ErrSev, @ErrState);
+        RETURN -6;
+    END CATCH;
+END;
